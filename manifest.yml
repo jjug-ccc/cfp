@@ -7,3 +7,5 @@ applications:
   - cfp-db # cf create-service p-mysql 100mb-dev cfp-db
   domains:
   - cfapps.pez.pivotal.io
+  env:
+    _JAVA_OPTIONS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP -Djava.security.egd=file:/dev/./urandom
