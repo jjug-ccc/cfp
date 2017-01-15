@@ -29,8 +29,9 @@ public class CloudConfig extends AbstractCloudConfig {
 	@Bean
 	DataSource dataSource() {
 		Map<String, Object> properties = new HashMap<>();
-		properties.put("initSQL",
-				"SET SESSION sql_mode='TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY'"); // TODO
+		// TODO
+		// properties.put("initSQL",
+		// "SET SESSION sql_mode='TRADITIONAL,NO_AUTO_VALUE_ON_ZERO,ONLY_FULL_GROUP_BY'");
 		return connectionFactory().dataSource(new DataSourceConfig(
 				new PoolConfig(minPoolSize, maxPoolSize, maxWaitTime), null, properties));
 	}
