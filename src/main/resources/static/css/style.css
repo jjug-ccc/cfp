@@ -1,0 +1,88 @@
+body {
+    font-size: medium;
+    line-height: 1.5em;
+}
+
+section {
+    margin: 8px auto;
+    line-height: 1.5em;
+    width: 96%;
+    padding: 5px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+h1:before {
+    content: url("../images/h1-32x32.png") ' ';
+}
+
+h2:before {
+    content: "📝";
+}
+
+h3:before {
+    content: url("../images/h3-32x32.png");
+}
+
+h3 {
+    height: 32px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+h4:before {
+    content: "☕ ️";
+}
+
+h4 {
+    border-bottom-style: dotted;
+    margin: 6px;
+}
+
+h5 {
+    font-size: medium;
+    margin: 1px;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: left;
+    line-height: 1.5;
+}
+
+th {
+    padding: 2px;
+}
+
+td {
+    padding: 5px;
+}
+
+textarea {
+    height: 100px;
+    width: 100%;
+}
+
+input[type=text], input[type=url], input[type=email], input[type=tel] {
+    width: 100%;
+}
+
+input[disabled=disabled] {
+    opacity: .3;
+}
+
+select {
+    width: 100%;
+}
+
+.speaker-left, .speaker-right {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.speaker-right {
+    padding-left: 20px;
+}

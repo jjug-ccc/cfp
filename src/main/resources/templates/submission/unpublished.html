@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${@cfpProps.applicationName}">アンケート</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h1 th:text="${@cfpProps.applicationName}">アンケート</h1>
+</section>
+<section>
+    <h3>未公開セッションです</h3>
+    <div sec:authorize="authenticated">
+        <hr/>
+        <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">🏠 アンケート</a>
+    </div>
+</section>
+</body>
+</html>

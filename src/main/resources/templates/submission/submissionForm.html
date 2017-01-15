@@ -1,0 +1,168 @@
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<div>
+    <section>
+        <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
+            2016 Fall</h2>
+    </section>
+    <section>
+        <div th:object="${submissionForm}">
+            <div th:if="${#fields.hasErrors()}">
+                <ul>
+                    <li th:each="error : ${#fields.detailedErrors()}">
+                        <span th:text="${error.getMessage()}">Error message</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form th:object="${submissionForm}"
+              th:action="@{__${submissionId != null ? ('/submissions/' + submissionId + '/form') : ('/conferences/' + conference.confId + '/submissions/form')}__}"
+              method="post">
+            <h2>Call for Papers</h2>
+            <div th:utext="${@marked.marked(conference.confCfpNote)}"></div>
+            <p th:if="${submission}">Status: <span
+                    th:text="${submission.submissionStatus.message(@messageSource, #locale)}"></span></p>
+            <h3 th:text="#{session}">aaa</h3>
+            <table style="width: 80%">
+                <tr>
+                    <th style="width: 30%"><label th:for="title" th:text="#{title}">タイトル</label></th>
+                    <td style="width: 70%"><input type="text" required="required" th:field="*{title}"
+                                                  placeholder="(Required)"
+                                                  th:classappend="${#fields.hasErrors('title') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="description" th:text="#{description}">aaa</label></th>
+                    <td><textarea required="required" th:field="*{description}"
+                                  placeholder="Markdown is available. (Required)"
+                                  th:classappend="${#fields.hasErrors('description') ? 'error' : ''}"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label th:for="target" th:text="#{target}">aaa</label></th>
+                    <td><input type="text" required="required" th:field="*{target}"
+                               placeholder="(Required)"
+                               th:classappend="${#fields.hasErrors('target') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="category" th:text="#{category}">aaa</label></th>
+                    <td><select required="required" th:field="*{category}"
+                                th:classappend="${#fields.hasErrors('category') ? 'error' : ''}">
+                        <option value="">(Required)</option>
+                        <option th:each="e : ${T(jjug.submission.enums.Category).values()}"
+                                th:text="${e.message(@messageSource, #locale)}"
+                                th:value="${e}"></option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th><label th:for="level" th:text="#{level}">aaa</label></th>
+                    <td><select required="required" th:field="*{level}"
+                                th:classappend="${#fields.hasErrors('level') ? 'error' : ''}">
+                        <option value="">(Required)</option>
+                        <option th:each="e : ${T(jjug.submission.enums.Level).values()}"
+                                th:text="${e.message(@messageSource, #locale)}"
+                                th:value="${e}"></option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th><label th:for="talkType" th:text="#{talkType}">aaa</label></th>
+                    <td><select required="required" name="talkType" th:field="*{talkType}"
+                                th:classappend="${#fields.hasErrors('talkType') ? 'error' : ''}">
+                        <option value="">(Required)</option>
+                        <option th:each="e : ${T(jjug.submission.enums.TalkType).values()}"
+                                th:text="${e.message(@messageSource, #locale)}"
+                                th:value="${e}"></option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th><label th:for="language" th:text="#{language}">aaa</label></th>
+                    <td><select required="required" th:field="*{language}"
+                                th:classappend="${#fields.hasErrors('language') ? 'error' : ''}">
+                        <option value="">(Required)</option>
+                        <option th:each="e : ${T(jjug.submission.enums.Language).values()}"
+                                th:text="${e.message(@messageSource, #locale)}"
+                                th:value="${e}"></option>
+                    </select></td>
+                </tr>
+            </table>
+            <h3 th:text="#{speaker}">aaa</h3>
+            <table style="width: 80%">
+                <tr>
+                    <th style="width: 30%"><label th:for="name" th:text="#{name}">名前</label></th>
+                    <td style="width: 70%"><input type="text" required="required" th:field="*{name}"
+                                                  placeholder="(Required)"
+                                                  th:classappend="${#fields.hasErrors('name') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="companyOrCommunity" th:text="#{companyOrCommunity}">aaa</label></th>
+                    <td><input type="text" required="required" th:field="*{companyOrCommunity}"
+                               placeholder="(Required)"
+                               th:classappend="${#fields.hasErrors('companyOrCommunity') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="bio" th:text="#{bio}">aaa</label></th>
+                    <td><textarea required="required" th:field="*{bio}"
+                                  placeholder="Markdown is available. (Required)"
+                                  th:classappend="${#fields.hasErrors('bio') ? 'error' : ''}"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label th:for="activities" th:text="#{activities}">aaa</label></th>
+                    <td><textarea required="required" th:field="*{activities}"
+                                  placeholder="Markdown is available. (Required)"
+                                  th:classappend="${#fields.hasErrors('activities') ? 'error' : ''}"></textarea></td>
+                </tr>
+                <tr>
+                    <th><label th:for="profileUrl" th:text="#{profileUrl}">aaa</label></th>
+                    <td><input type="url" required="required" th:field="*{profileUrl}"
+                               placeholder="(Required)"
+                               th:classappend="${#fields.hasErrors('profileUrl') ? 'error' : ''}"/></td>
+                </tr>
+            </table>
+            <h3 th:text="#{private}">aaa</h3>
+            <table style="width: 80%">
+                <tr>
+                    <th style="width: 30%"><label th:for="email" th:text="#{email}">Email</label></th>
+                    <td style="width: 70%"><input type="email" required="required" th:field="*{email}"
+                                                  placeholder="(Required)"
+                                                  th:classappend="${#fields.hasErrors('email') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="transportationAllowance" th:text="#{transportationAllowance}">aaa</label></th>
+                    <td><input type="checkbox" th:field="*{transportationAllowance}"
+                               th:classappend="${#fields.hasErrors('transportationAllowance') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="city" th:text="#{city}">aaa</label></th>
+                    <td><input type="text" th:field="*{city}"
+                               th:classappend="${#fields.hasErrors('city') ? 'error' : ''}"/></td>
+                </tr>
+                <tr>
+                    <th><label th:for="note" th:text="#{note}">aaa</label></th>
+                    <td><textarea th:field="*{note}"
+                                  th:classappend="${#fields.hasErrors('note') ? 'error' : ''}"></textarea></td>
+                </tr>
+            </table>
+            <br th:if="${submissionId}"/>
+            <a th:if="${submissionId}" th:href="@{/submissions/{submissionId}/preview(submissionId=${submissionId})}">🔍
+                Preview</a>
+            <br/>
+            <div>
+                <input type="submit" value="Submit CFP"/>
+                <input type="submit" name="draft" value="Save as Draft"/>
+                <input th:if="${submissionId}" type="submit" name="withdraw" value="Withdraw CFP"/>
+            </div>
+        </form>
+        <hr/>
+        <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>
+    </section>
+</div>
+</body>
+</html>

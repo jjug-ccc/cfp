@@ -1,0 +1,106 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${submission.title}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<div>
+    <section>
+        <h2 th:text="${submission.title}">JJUG CCC
+            2016 Fall</h2>
+    </section>
+    <section>
+        <h3 th:text="#{session}">aaa</h3>
+        <h4 th:text="#{title}">タイトル</h4>
+        <p th:text="${submission.title}"></p>
+        <h4 th:text="#{description}">aaa</h4>
+        <p th:utext="${@marked.marked(submission.description)}"></p>
+        <h4 th:text="#{target}">aaa</h4>
+        <p th:text="${submission.target}"></p>
+        <h4 th:text="#{category}">aaa</h4>
+        <p th:text="${submission.category.message(@messageSource, #locale)}"></p>
+        <h4 th:text="#{level}">aaa</h4>
+        <p th:text="${submission.level.message(@messageSource, #locale)}"></p>
+        <h4 th:text="#{talkType}">aaa</h4>
+        <p th:text="${submission.talkType.message(@messageSource, #locale)}"></p>
+        <h4 th:text="#{language}">aaa</h4>
+        <h3 th:text="#{speaker}">aaa</h3>
+        <div class="speaker-left">
+            <img th:src="${submission.speaker.profileUrl}" class="thumbnail"/>
+        </div>
+        <div class="speaker-right">
+            <h5>
+                <span th:text="${submission.speaker.name}"></span>
+                <br/>
+                <small th:text="${submission.speaker.companyOrCommunity}"></small>
+            </h5>
+            <span th:utext="${@marked.marked(submission.speaker.bio)}"></span>
+            <br/>
+            <span th:utext="${@marked.marked(submission.speaker.activities)}"></span>
+        </div>
+    </section>
+
+    <section th:if="${submission.conference.confStatus.openVote}">
+        <h3 th:text="#{vote}"></h3>
+        <p sec:authorize="not authenticated">
+            <a th:href="@{/}" href="../index.html" th:text="#{login-for-vote}">Login</a>
+        </p>
+        <div sec:authorize="authenticated">
+            <form onsubmit="vote(this);return false;" id="form"
+                  th:style="${'display: ' + (voted ?'none' : 'block')}">
+                <input type="hidden" name="submissionId" th:value="${submission.submissionId}"/>
+                <input type="image" src="../../static/images/like.png" th:src="@{/images/like.png}"/>
+            </form>
+            <div id="thanks" th:style="${'display: ' + (voted ?'block' : 'none')}">
+                <span th:text="#{thank-you-for-your-vote}"></span><br/>
+                <img src="../../static/images/thanks.png" th:src="@{/images/thanks.png}"/>
+            </div>
+            <script src="../../static/js/axios.min.js" th:src="@{/js/axios.min.js}"></script>
+            <script src="../../static/js/utils.js" th:src="@{/js/utils.js}"></script>
+            <script>
+                function vote(form) {
+                    var request = {
+                            submission: {
+                                submissionId: form.submissionId.value
+                            }
+                        },
+                        reset = function () {
+                            forEach(form.querySelectorAll('input,textarea'),
+                                function (x) {
+                                    x.disabled = false;
+                                });
+                        };
+                    forEach(form.querySelectorAll('input,textarea'),
+                        function (x) {
+                            x.disabled = true;
+                        });
+                    axios.post('/v1/votes', request)
+                        .then(function (res) {
+                            document.getElementById('form').style.display = 'none';
+                            document.getElementById('thanks').style.display = 'block';
+                            form.reset();
+                            reset();
+                        })
+                        .catch(function (e) {
+                            console.error(e);
+                            alert(JSON.stringify(e.response.data));
+                            reset();
+                        });
+                    return false;
+                }
+            </script>
+        </div>
+        <hr/>
+        <a th:href="@{/conferences/{confId}/votes(confId=${submission.conference.confId})}" href="../vote/votes.html"
+           th:text="${submission.conference.confName}">CFP</a>
+    </section>
+</div>
+</body>
+</html>

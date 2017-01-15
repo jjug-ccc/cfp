@@ -1,0 +1,141 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${@cfpProps.applicationName}">CFP</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../static/css/theme.css"/>
+</head>
+<body>
+<div>
+    <section>
+        <h1 th:text="${@cfpProps.applicationName}">CFP</h1>
+        <p sec:authorize="authenticated">
+            <span sec:authentication="principal.name">duke</span>さんログイン中。
+        </p>
+    </section>
+    <section th:unless="${#lists.isEmpty(cfpConferences.content)}">
+        <h3>応募受付中のCFP</h3>
+        <ul>
+            <li th:each="conference : ${cfpConferences}">
+                <span th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}"></span>
+                <a th:href="@{/conferences/{confId}/submissions/form(confId=${conference.confId})}"
+                   href="./admin/conference.html">📝応募</a>
+            </li>
+        </ul>
+    </section>
+    <section th:unless="${#lists.isEmpty(votingConferences.content)}">
+        <h3>投票受付中のCFP</h3>
+        <ul>
+            <li th:each="conference : ${votingConferences}">
+                <a th:href="@{/conferences/{confId}/votes(confId=${conference.confId})}"
+                   href="./vote/votes.html"
+                   th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG
+                    CCC 2016 Fall</a>
+            </li>
+        </ul>
+    </section>
+    <section th:unless="${#lists.isEmpty(openConferences.content)}">
+        <h3>投票完了のCFP</h3>
+        <ul>
+            <li th:each="conference : ${openConferences}">
+                <a th:href="@{/conferences/{confId}/submissions(confId=${conference.confId})}"
+                   href="./admin/conference.html"
+                   th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG
+                    CCC 2016 Fall</a>
+            </li>
+        </ul>
+    </section>
+    <section th:unless="${#lists.isEmpty(submissions)}">
+        <h3>応募済みCFP</h3>
+        <ul>
+            <li th:each="submission : ${submissions}">
+                [<span th:text="${submission.conference.confName}">JJUG CCC</span>]
+                <a th:href="@{/submissions/{submissionId}/form(submissionId=${submission.submissionId})}"
+                   href="submission/submissionForm.html"><span th:text="${submission.title}">キーノート</span></a> [<span
+                    th:text="${submission.submissionStatus.message(@messageSource, #locale)}">OPEN</span>]
+            </li>
+        </ul>
+    </section>
+    <div sec:authorize="hasRole('ADMIN')">
+        <section>
+            <h3>CFP一覧 (管理者用)</h3>
+            <ul>
+                <li th:each="conference : ${conferences}">
+                    <a th:href="@{/admin/conferences/{confId}(confId=${conference.confId})}"
+                       href="conference.html"
+                       th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG
+                        CCC 2016 Fall</a> [<span
+                        th:text="${conference.confStatus.message(@messageSource, #locale)}">OPEN</span>]
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h3>システムメトリクス</h3>
+            <h4>メモリ使用率</h4>
+            <div id="metrics"></div>
+            <h4>HTTPセッション数</h4>
+            <p style="font-size: xx-large">
+                🏃 <span id="activeSession"></span>
+            </p>
+        </section>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="../static/js/axios.min.js" th:src="@{/js/axios.min.js}"></script>
+        <script type="text/javascript">
+            google.charts.load('current', {'packages': ['gauge']});
+            google.charts.setOnLoadCallback(drawChart);
+            function drawChart() {
+
+                var data = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['Memory', 0],
+                    ['Heap (Used)', 0],
+                    ['Heap (Committed)', 0]
+                ]);
+
+                var options = {
+                    width: 400, height: 120,
+                    redFrom: 90, redTo: 100,
+                    yellowFrom: 75, yellowTo: 90,
+                    minorTicks: 5
+                };
+
+                var chart = new google.visualization.Gauge(document.getElementById('metrics'));
+
+                chart.draw(data, options);
+
+                getMetrics(data, chart, options);
+
+                setInterval(function () {
+                    getMetrics(data, chart, options);
+                }, 10000);
+            }
+
+            function getMetrics(data, chart, options) {
+                axios.get('/metrics').then(function (res) {
+                    var metrics = res.data,
+                        mem = metrics['mem'],
+                        memFree = metrics['mem.free'],
+                        heap = metrics['heap'],
+                        heapUsed = metrics['heap.used'],
+                        heapCommited = metrics['heap.committed'],
+                        activeSession = metrics['httpsessions.active'];
+                    // Memory
+                    data.setValue(0, 1, 100 * memFree / mem);
+                    // Heap (Used)
+                    data.setValue(1, 1, 100 * heapUsed / heap);
+                    // Heap (Commited)
+                    data.setValue(2, 1, 100 * heapCommited / heap);
+                    chart.draw(data, options);
+                    // Active Session
+                    document.getElementById('activeSession').innerText = activeSession;
+                });
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

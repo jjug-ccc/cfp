@@ -1,0 +1,1 @@
+UPDATE conference SET conf_note='### JJUG CCC 2017 Spring' WHERE conf_id=0x00000000000000000000000020170520;

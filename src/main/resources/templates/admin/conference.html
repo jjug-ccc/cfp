@@ -1,0 +1,143 @@
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
+        2016 Fall</h2>
+</section>
+<section>
+    <h3>カンファレンス編集</h3>
+    <div th:object="${conferenceForm}">
+        <div th:if="${#fields.hasErrors()}">
+            <ul>
+                <li th:each="error : ${#fields.detailedErrors()}">
+                    <span th:text="${error.getMessage()}">Error message</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <form th:object="${conferenceForm}" th:action="@{/admin/conferences/{confId}(confId=${conference.confId})}"
+          method="post">
+        <select name="confStatus" th:field="*{confStatus}">
+            <option th:each="status : ${T(jjug.conference.enums.ConfStatus).values()}"
+                    th:text="${status.message(@messageSource, #locale)}"
+                    th:value="${status}"
+                    th:classappend="${#fields.hasErrors('confStatus') ? 'error' : ''}"></option>
+        </select>
+        <br/>
+        <br/>
+        <textarea name="confCpNote" th:field="*{confCfpNote}"
+                  placeholder="Note for CFP. Markdown is available. (Required)"
+                  required="required"
+                  th:classappend="${#fields.hasErrors('confCfpNote') ? 'error' : ''}"></textarea>
+        <br/>
+        <br/>
+        <textarea name="confVoteNote" th:field="*{confVoteNote}"
+                  placeholder="Note for Vote. Markdown is available. (Required)"
+                  required="required"
+                  th:classappend="${#fields.hasErrors('confVoteNote') ? 'error' : ''}"></textarea>
+        <br/>
+        <br/>
+        <input type="submit"/>
+    </form>
+</section>
+<section>
+    <h3>応募済みCFP</h3>
+    <h4 th:text="#{submissionstatus.submitted}"></h4>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+        </tr>
+        <tr th:each="submission : ${submittedSubmissions}">
+            <td><a th:text="${submission.title}"
+                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:text="${submission.speaker.name}"></td>
+            <td th:text="${submission.speaker.github}"></td>
+            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+        </tr>
+    </table>
+    <h4 th:text="#{submissionstatus.draft}"></h4>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+        </tr>
+        <tr th:each="submission : ${draftSubmissions}">
+            <td><a th:text="${submission.title}"
+                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:text="${submission.speaker.name}"></td>
+            <td th:text="${submission.speaker.github}"></td>
+            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+        </tr>
+    </table>
+    <h4 th:text="#{submissionstatus.withdrawn}"></h4>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+        </tr>
+        <tr th:each="submission : ${withdrawnSubmissions}">
+            <td><a th:text="${submission.title}"
+                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:text="${submission.speaker.name}"></td>
+            <td th:text="${submission.speaker.github}"></td>
+            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+        </tr>
+    </table>
+    <hr/>
+    <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>
+</section>
+<section>
+    <h3>投票結果</h3>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+            <th>投票数</th>
+        </tr>
+        <tr th:each="vote : ${voteSummaries}">
+            <td><a th:text="${vote.title}"
+                   th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
+            <td th:text="${vote.name}"></td>
+            <td th:text="${vote.github}"></td>
+            <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
+            <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
+            <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${vote.count}"></td>
+        </tr>
+    </table>
+</section>
+</body>
+</html>
