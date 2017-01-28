@@ -1,7 +1,7 @@
 applications:
 - name: jjug-cfp
   buildpack: java_buildpack_offline
-  memory: 1g
+  memory: 2g
   path: target/cfp-0.0.1-SNAPSHOT.jar
   services:
   - cfp-db # cf create-service p-mysql 100mb-dev cfp-db
