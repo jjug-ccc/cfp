@@ -29,7 +29,6 @@
               th:action="@{__${submissionId != null ? ('/submissions/' + submissionId + '/form') : ('/conferences/' + conference.confId + '/submissions/form')}__}"
               method="post">
             <h2>Call for Papers</h2>
-            <div th:utext="${@marked.marked(conference.confCfpNote)}"></div>
             <p th:if="${submission}">Status: <span
                     th:text="${submission.submissionStatus.message(@messageSource, #locale)}"></span></p>
             <h3 th:text="#{session}">aaa</h3>

@@ -22,7 +22,7 @@
         <ul>
             <li th:each="conference : ${cfpConferences}">
                 <span th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}"></span>
-                <a th:href="@{/conferences/{confId}/submissions/form(confId=${conference.confId})}"
+                <a th:href="@{/conferences/{confId}/submissions(confId=${conference.confId})}"
                    href="./admin/conference.html">📝応募</a>
             </li>
         </ul>

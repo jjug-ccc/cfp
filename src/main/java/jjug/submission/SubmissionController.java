@@ -33,12 +33,25 @@ public class SubmissionController {
 	@ModelAttribute
 	SubmissionForm submissionForm(@AuthenticationPrincipal CfpUser user) {
 		SubmissionForm submissionForm = new SubmissionForm();
-		submissionForm.setName(user.getName());
-		submissionForm.setActivities(format("https://github.com/%s", user.getGithub()));
-		submissionForm.setProfileUrl(format(
-				"https://avatars.githubusercontent.com/%s?size=120", user.getGithub()));
-		submissionForm.setEmail(user.getEmail());
+		if (user != null) {
+			submissionForm.setName(user.getName());
+			submissionForm
+					.setActivities(format("https://github.com/%s", user.getGithub()));
+			submissionForm.setProfileUrl(
+					format("https://avatars.githubusercontent.com/%s?size=120",
+							user.getGithub()));
+			submissionForm.setEmail(user.getEmail());
+		}
 		return submissionForm;
+	}
+
+	@GetMapping("conferences/{confId}/submissions")
+	String showSubmissions(@PathVariable UUID confId, Model model,
+			SubmissionForm submissionForm) {
+		Conference conference = conferenceRepository.findOne(confId).get();
+		checkIfCfpIsOpen(conference);
+		model.addAttribute("conference", conference);
+		return "submission/submissions";
 	}
 
 	@GetMapping("conferences/{confId}/submissions/form")
