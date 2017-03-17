@@ -15,6 +15,8 @@ public interface VoteSummary {
 
 	String getGithub();
 
+	String getEmail();
+
 	Category getCategory();
 
 	Level getLevel();

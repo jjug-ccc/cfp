@@ -18,6 +18,6 @@ public interface VoteRepository extends Repository<Vote, UUID> {
 			@Param("github") String github);
 
 	@RestResource(exported = false)
-	@Query("SELECT s.submissionId AS submissionId, s.title AS title, sp.name AS name, sp.github AS github, s.category AS category, s.level AS level, s.talkType AS talkType, count(v) AS count FROM Vote v RIGHT OUTER JOIN v.submission s JOIN s.speaker sp WHERE s.conference.confId = :confId AND s.submissionStatus=jjug.submission.enums.SubmissionStatus.SUBMITTED GROUP BY s.submissionId ORDER BY count(v) DESC, s.createdAt ASC")
+	@Query("SELECT s.submissionId AS submissionId, s.title AS title, sp.name AS name, sp.github AS github, sp.email AS email, s.category AS category, s.level AS level, s.talkType AS talkType, count(v) AS count FROM Vote v RIGHT OUTER JOIN v.submission s JOIN s.speaker sp WHERE s.conference.confId = :confId AND s.submissionStatus=jjug.submission.enums.SubmissionStatus.SUBMITTED GROUP BY s.submissionId ORDER BY count(v) DESC, s.createdAt ASC")
 	List<VoteSummary> reportSummary(@Param("confId") UUID confId);
 }

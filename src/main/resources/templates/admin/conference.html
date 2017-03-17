@@ -122,6 +122,7 @@
             <th th:text="#{title}">aa</th>
             <th th:text="#{name}">aa</th>
             <th th:text="#{github}">aa</th>
+            <th>Email</th>
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
@@ -132,6 +133,7 @@
                    th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
             <td th:text="${vote.name}"></td>
             <td th:text="${vote.github}"></td>
+            <td th:text="${vote.email}"></td>
             <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
             <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
             <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
