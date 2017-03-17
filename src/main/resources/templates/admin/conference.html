@@ -47,7 +47,7 @@
                   th:classappend="${#fields.hasErrors('confVoteNote') ? 'error' : ''}"></textarea>
         <br/>
         <br/>
-        <input type="submit"/>
+        <input name="changeConfStatus" type="submit"/>
     </form>
 </section>
 <section>
@@ -117,29 +117,43 @@
 </section>
 <section>
     <h3>投票結果</h3>
-    <table>
-        <tr>
-            <th th:text="#{title}">aa</th>
-            <th th:text="#{name}">aa</th>
-            <th th:text="#{github}">aa</th>
-            <th>Email</th>
-            <th th:text="#{category}">aa</th>
-            <th th:text="#{level}">aa</th>
-            <th th:text="#{talkType}">aa</th>
-            <th>投票数</th>
-        </tr>
-        <tr th:each="vote : ${voteSummaries}">
-            <td><a th:text="${vote.title}"
-                   th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
-            <td th:text="${vote.name}"></td>
-            <td th:text="${vote.github}"></td>
-            <td th:text="${vote.email}"></td>
-            <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
-            <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
-            <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
-            <td th:text="${vote.count}"></td>
-        </tr>
-    </table>
+    <form th:object="${changeStatusForm}" th:action="@{/admin/conferences/{confId}(confId=${conference.confId})}"
+          method="post">
+        <table>
+            <tr>
+                <th th:text="#{title}">aa</th>
+                <th th:text="#{name}">aa</th>
+                <th th:text="#{github}">aa</th>
+                <th>Email</th>
+                <th th:text="#{category}">aa</th>
+                <th th:text="#{level}">aa</th>
+                <th th:text="#{talkType}">aa</th>
+                <th>投票数</th>
+                <th>状態</th>
+            </tr>
+            <tr th:each="vote,row : ${voteSummaries}">
+                <td><a th:text="${vote.title}"
+                       th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
+                <td th:text="${vote.name}"></td>
+                <td th:text="${vote.github}"></td>
+                <td th:text="${vote.email}"></td>
+                <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.count}"></td>
+                <td>
+                    <select th:field="*{statuses[__${row.index}__].status}">
+                        <option th:each="e : ${T(jjug.submission.enums.SubmissionStatus).values()}"
+                                th:text="${e}"
+                                th:value="${e}">
+                        </option>
+                    </select>
+                    <input type="hidden" th:field="*{statuses[__${row.index}__].submissionId}"/>
+                </td>
+            </tr>
+        </table>
+        <input name="changeSubmissionStatus" type="submit"/>
+    </form>
 </section>
 </body>
 </html>

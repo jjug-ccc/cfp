@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import jjug.submission.enums.Category;
 import jjug.submission.enums.Level;
+import jjug.submission.enums.SubmissionStatus;
 import jjug.submission.enums.TalkType;
 
 public interface VoteSummary {
@@ -22,6 +23,8 @@ public interface VoteSummary {
 	Level getLevel();
 
 	TalkType getTalkType();
+
+	SubmissionStatus getStatus();
 
 	long getCount();
 }

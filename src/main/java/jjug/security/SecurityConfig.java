@@ -14,8 +14,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.requestMatchers().antMatchers("/**").and().authorizeRequests()
-				.mvcMatchers("/submissions/*", "/conferences/*/submissions",
-						"/conferences/*/votes")
+				.mvcMatchers("/submissions/*", "/conferences/*",
+						"/conferences/*/submissions", "/conferences/*/votes")
 				.permitAll().mvcMatchers("/v1/votes").authenticated()
 				.mvcMatchers("/admin", "/admin/**", "/v1/**").hasRole("ADMIN")
 				.antMatchers("/login**").permitAll().anyRequest().authenticated().and()

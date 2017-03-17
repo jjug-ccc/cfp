@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
+        2016 Fall</h2>
+</section>
+<section>
+    <h3>採択セッション一覧</h3>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+        </tr>
+        <tr th:each="submission : ${submissions}">
+            <td><a th:text="${submission.title}"
+                   th:href="@{/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:text="${submission.speaker.name}"></td>
+            <td th:text="${submission.speaker.github}"></td>
+            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+        </tr>
+    </table>
+    <hr/>
+    <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>
+</section>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import jjug.conference.ConferenceClosedException;
 import jjug.submission.CfpClosedException;
 import jjug.submission.UnpublishedSubmissionException;
 import jjug.vote.VoteClosedException;
@@ -50,5 +51,11 @@ public class ErrorControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String voteClosedException() {
 		return "vote/voteClosed";
+	}
+
+	@ExceptionHandler(ConferenceClosedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String conferenceClosedException() {
+		return "conference/conferenceClosed";
 	}
 }

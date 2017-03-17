@@ -2,6 +2,7 @@ package jjug.admin;
 
 import static jjug.submission.enums.SubmissionStatus.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
 import jjug.submission.Submission;
+import jjug.submission.SubmissionService;
 import jjug.vote.VoteRepository;
 import jjug.vote.VoteSummary;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -28,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 public class ConferenceAdminController {
 	private final ConferenceRepository conferenceRepository;
 	private final VoteRepository voteRepository;
+	private final SubmissionService submissionService;
 
 	@ModelAttribute
 	ConferenceForm conferenceForm() {
@@ -49,13 +55,20 @@ public class ConferenceAdminController {
 		model.addAttribute("withdrawnSubmissions",
 				submissions.stream().filter(s -> s.getSubmissionStatus() == WITHDRAWN)
 						.collect(Collectors.toList()));
-		List<VoteSummary> voteSummaries = voteRepository.reportSummary(confId);
+		List<VoteSummary> voteSummaries = voteRepository.reportSummary(confId).stream()
+				.sorted(Comparator.comparing(VoteSummary::getStatus))
+				.collect(Collectors.toList());
+		ChangeStatusForm changeStatusForm = new ChangeStatusForm(voteSummaries.stream()
+				.map(s -> new SubmissionService.Status(s.getSubmissionId(),
+						s.getStatus()))
+				.collect(Collectors.toList()));
 		model.addAttribute("voteSummaries", voteSummaries);
+		model.addAttribute("changeStatusForm", changeStatusForm);
 		return "admin/conference";
 	}
 
-	@PostMapping("admin/conferences/{confId}")
-	String postConf(@PathVariable UUID confId, Model model,
+	@PostMapping(path = "admin/conferences/{confId}", params = "changeConfStatus")
+	String changeConfStatus(@PathVariable UUID confId, Model model,
 			@Validated ConferenceForm form, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return getConf(confId, model, form);
@@ -64,6 +77,21 @@ public class ConferenceAdminController {
 		BeanUtils.copyProperties(form, conference);
 		conferenceRepository.save(conference);
 		return "redirect:/";
+	}
+
+	@PostMapping(path = "admin/conferences/{confId}", params = "changeSubmissionStatus")
+	String changeSubmissionStatus(@PathVariable UUID confId, Model model,
+			@Validated ChangeStatusForm form, BindingResult bindingResult) {
+		List<SubmissionService.Status> statuses = form.getStatuses();
+		submissionService.changeStatus(statuses);
+		return "redirect:/admin/conferences/{confId}";
+	}
+
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ChangeStatusForm {
+		private List<SubmissionService.Status> statuses;
 	}
 
 }
