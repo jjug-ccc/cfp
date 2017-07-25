@@ -1,10 +1,11 @@
 applications:
 - name: jjug-cfp
-  buildpack: java_buildpack_offline
+  buildpack: https://github.com/cloudfoundry/java-buildpack#v3.19
   memory: 2g
   path: target/cfp-0.0.1-SNAPSHOT.jar
   services:
   - cfp-db # cf create-service p-mysql 100mb-dev cfp-db
+  - metrics-forwarder
   domains:
   - cfapps.pez.pivotal.io
   env:
