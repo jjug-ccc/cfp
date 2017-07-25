@@ -24,6 +24,8 @@ resources:
       skip_cert_check: true
   - name: cfp-repo-pr
     type: pull-request
+    check_every: 10000h
+    webhook_token: {{webhook-token}}
     source:
       repo: jjug-ccc/cfp
       uri: git@github.com:jjug-ccc/cfp.git
