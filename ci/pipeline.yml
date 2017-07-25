@@ -1,0 +1,138 @@
+---
+resource_types:
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+resources:
+  - name: cfp-repo
+    type: git
+    check_every: 10000h
+    webhook_token: {{webhook-token}}
+    source:
+      uri: git@github.com:jjug-ccc/cfp.git
+      branch: master
+      private_key: {{github-private-key}}
+  - name: cf
+    type: cf
+    source:
+      api: {{cf-api}}
+      username: {{cf-username}}
+      password: {{cf-password}}
+      organization: {{cf-org}}
+      space: jjug
+      skip_cert_check: true
+  - name: cfp-repo-pr
+    type: pull-request
+    source:
+      repo: jjug-ccc/cfp
+      uri: git@github.com:jjug-ccc/cfp.git
+      access_token: {{github-access-token}}
+      private_key: {{github-private-key}}
+jobs:
+  - name: cfp-unit-test-pr
+    public: true
+    plan:
+    - aggregate:
+      - get: repo
+        resource: cfp-repo-pr
+        trigger: true
+    - put: cfp-repo-pr
+      params:
+        path: cfp-repo
+        status: pending
+    - task: unit
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: maven
+        inputs:
+        - name: repo
+        caches:
+        - path: repo/cache
+        run:
+          path: bash
+          dir: repo
+          args:
+          - -c
+          - |
+            rm -rf ~/.m2
+            ln -fs $(pwd)/cache ~/.m2
+            mvn test -DskipTests=true
+      on_success:
+        put: cfp-repo-pr
+        params:
+          path: cfp-repo
+          status: success
+      on_failure:
+        put: cfp-repo-pr
+        params:
+          path: cfp-repo
+          status: failure
+  - name: cfp-unit-test
+    plan:
+      - aggregate:
+        - get: repo
+          resource: cfp-repo
+          trigger: true
+      - task: unit
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: maven
+          inputs:
+          - name: repo
+          caches:
+          - path: repo/cache
+          run:
+            path: bash
+            dir: repo
+            args:
+            - -c
+            - |
+              rm -rf ~/.m2
+              ln -fs $(pwd)/cache ~/.m2
+              mvn test -DskipTests=true
+  - name: cfp-deploy-to-cf
+    plan:
+      - aggregate:
+        - get: repo
+          resource: cfp-repo
+          trigger: true
+          passed:
+          - cfp-unit-test
+      - task: package
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: maven
+          inputs:
+          - name: repo
+          outputs:
+          - name: output
+          caches:
+          - path: repo/cache
+          run:
+            path: bash
+            dir: repo
+            args:
+            - -c
+            - |
+              rm -rf ~/.m2
+              ln -fs $(pwd)/cache ~/.m2
+              mvn package -DskipTests=true
+              cp target/*.jar ../output/app.jar
+      - put: cf
+        params:
+          manifest: repo/manifest.yml
+          path: output/app.jar
+          current_app_name: jjug-cfp
+          env:
+            cfp.cloud.max-pool-size: 40
+            server.tomcat.max-threads: 60
