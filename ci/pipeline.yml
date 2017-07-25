@@ -41,7 +41,7 @@ jobs:
         trigger: true
     - put: cfp-repo-pr
       params:
-        path: cfp-repo
+        path: repo
         status: pending
     - task: unit
       config:
@@ -66,12 +66,12 @@ jobs:
       on_success:
         put: cfp-repo-pr
         params:
-          path: cfp-repo
+          path: repo
           status: success
       on_failure:
         put: cfp-repo-pr
         params:
-          path: cfp-repo
+          path: repo
           status: failure
   - name: cfp-unit-test
     plan:
