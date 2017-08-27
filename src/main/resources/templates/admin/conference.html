@@ -61,6 +61,7 @@
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{note}">aa</th>
         </tr>
         <tr th:each="submission : ${submittedSubmissions}">
             <td><a th:text="${submission.title}"
@@ -70,6 +71,7 @@
             <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speaker.note}"></td>
         </tr>
     </table>
     <h4 th:text="#{submissionstatus.draft}"></h4>
@@ -81,6 +83,7 @@
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{note}">aa</th>
         </tr>
         <tr th:each="submission : ${draftSubmissions}">
             <td><a th:text="${submission.title}"
@@ -90,6 +93,7 @@
             <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speaker.note}"></td>
         </tr>
     </table>
     <h4 th:text="#{submissionstatus.withdrawn}"></h4>
@@ -101,6 +105,7 @@
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{note}">aa</th>
         </tr>
         <tr th:each="submission : ${withdrawnSubmissions}">
             <td><a th:text="${submission.title}"
@@ -110,6 +115,7 @@
             <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speaker.note}"></td>
         </tr>
     </table>
     <hr/>
