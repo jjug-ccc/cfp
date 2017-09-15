@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -56,10 +57,12 @@ public class Submission implements Serializable {
 	@NotNull
 	private Language language;
 	@NotNull
+	@JsonIgnore
 	private SubmissionStatus submissionStatus;
 	@ManyToOne
 	@JoinColumn(name = "conference_id")
 	@NotNull
+	@JsonIgnore
 	private Conference conference;
 	@Column(insertable = false, updatable = false)
 	private Instant createdAt;
