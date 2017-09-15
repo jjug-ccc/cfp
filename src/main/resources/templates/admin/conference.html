@@ -127,6 +127,7 @@
           method="post">
         <table>
             <tr>
+                <th>状態</th>
                 <th th:text="#{title}">aa</th>
                 <th th:text="#{name}">aa</th>
                 <th th:text="#{github}">aa</th>
@@ -135,18 +136,8 @@
                 <th th:text="#{level}">aa</th>
                 <th th:text="#{talkType}">aa</th>
                 <th>投票数</th>
-                <th>状態</th>
             </tr>
             <tr th:each="vote,row : ${voteSummaries}">
-                <td><a th:text="${vote.title}"
-                       th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
-                <td th:text="${vote.name}"></td>
-                <td th:text="${vote.github}"></td>
-                <td th:text="${vote.email}"></td>
-                <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
-                <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
-                <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
-                <td th:text="${vote.count}"></td>
                 <td>
                     <select th:field="*{statuses[__${row.index}__].status}">
                         <option th:each="e : ${T(jjug.submission.enums.SubmissionStatus).values()}"
@@ -156,6 +147,15 @@
                     </select>
                     <input type="hidden" th:field="*{statuses[__${row.index}__].submissionId}"/>
                 </td>
+                <td><a th:text="${vote.title}"
+                       th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
+                <td th:text="${vote.name}"></td>
+                <td th:text="${vote.github}"></td>
+                <td th:text="${vote.email}"></td>
+                <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.count}"></td>
             </tr>
         </table>
         <input name="changeSubmissionStatus" type="submit"/>
