@@ -1,8 +1,10 @@
 package jjug;
 
-import java.nio.file.AccessDeniedException;
-import java.util.NoSuchElementException;
-
+import jjug.conference.ConferenceClosedException;
+import jjug.submission.CfpClosedException;
+import jjug.submission.CfpFixedException;
+import jjug.submission.UnpublishedSubmissionException;
+import jjug.vote.VoteClosedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
@@ -10,10 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import jjug.conference.ConferenceClosedException;
-import jjug.submission.CfpClosedException;
-import jjug.submission.UnpublishedSubmissionException;
-import jjug.vote.VoteClosedException;
+import java.nio.file.AccessDeniedException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice(annotations = Controller.class)
 public class ErrorControllerAdvice {
@@ -57,5 +57,11 @@ public class ErrorControllerAdvice {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	String conferenceClosedException() {
 		return "conference/conferenceClosed";
+	}
+
+	@ExceptionHandler(CfpFixedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String cfpFixedException() {
+		return "conference/cfpFixed";
 	}
 }

@@ -1,10 +1,10 @@
 package jjug.conference.enums;
 
-import java.util.stream.Stream;
-
 import jjug.DisplayMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Getter
@@ -20,5 +20,9 @@ public enum ConfStatus implements DisplayMessage {
 	public static ConfStatus valueOf(int v) {
 		return Stream.of(values()).filter(x -> x.getValue() == v).findAny()
 				.orElseThrow(() -> new IllegalArgumentException(v + " is illegal!"));
+	}
+
+	public boolean isFixedCfp() {
+		return this.value >= SELECTION.getValue();
 	}
 }

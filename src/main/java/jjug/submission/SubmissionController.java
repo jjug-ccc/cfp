@@ -1,11 +1,12 @@
 package jjug.submission;
 
-import static java.lang.String.format;
-import static jjug.submission.enums.SubmissionStatus.*;
-
-import java.util.Optional;
-import java.util.UUID;
-
+import jjug.CfpUser;
+import jjug.conference.Conference;
+import jjug.conference.ConferenceRepository;
+import jjug.speaker.Speaker;
+import jjug.speaker.SpeakerRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jjug.CfpUser;
-import jjug.conference.Conference;
-import jjug.conference.ConferenceRepository;
-import jjug.speaker.Speaker;
-import jjug.speaker.SpeakerRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+import java.util.UUID;
+
+import static java.lang.String.format;
+import static jjug.submission.enums.SubmissionStatus.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -108,13 +107,20 @@ public class SubmissionController {
 			return editForm(submissionId, model, submissionForm);
 		}
 		Submission submission = submissionRepository.findOne(submissionId).get();
+		if (submission.getConference().getConfStatus().isFixedCfp()) {
+			if (draft.isPresent() || withdraw.isPresent()) {
+				throw new CfpFixedException();
+			}
+		} else {
+			submission.setSubmissionStatus(draft.map(d -> DRAFT)
+					.orElseGet(() -> withdraw.map(w -> WITHDRAWN).orElse(SUBMITTED)));
+		}
+
 		Speaker speaker = speakerRepository.findByGithub(user.getGithub())
 				.orElseGet(() -> Speaker.builder().github(user.getGithub()).build());
 		BeanUtils.copyProperties(submissionForm, speaker);
 		BeanUtils.copyProperties(submissionForm, submission);
 		submission.setSpeaker(speaker);
-		submission.setSubmissionStatus(draft.map(d -> DRAFT)
-				.orElseGet(() -> withdraw.map(w -> WITHDRAWN).orElse(SUBMITTED)));
 		log.info("Edit {}", submission);
 		submissionRepository.save(submission);
 		return "redirect:/submissions/{submissionId}/form";
