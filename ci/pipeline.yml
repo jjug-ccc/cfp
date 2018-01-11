@@ -20,7 +20,7 @@ resources:
       username: {{cf-username}}
       password: {{cf-password}}
       organization: {{cf-org}}
-      space: jjug
+      space: production
       skip_cert_check: true
   - name: cfp-repo-pr
     type: pull-request
@@ -100,6 +100,7 @@ jobs:
               ln -fs $(pwd)/cache ~/.m2
               mvn test -DskipTests=true
   - name: cfp-deploy-to-cf
+    serial: true
     plan:
       - aggregate:
         - get: repo

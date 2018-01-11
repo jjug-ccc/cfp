@@ -1,2 +1,2 @@
 #!/bin/sh
-echo y | fly -t home sp -p jjug-cfp -c pipeline.yml -l ./credentials.yml
+fly -t jjug sp -p jjug-cfp -c pipeline.yml -l ./credentials.yml
