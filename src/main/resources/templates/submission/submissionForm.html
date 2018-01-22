@@ -156,7 +156,7 @@
             <br/>
             <div>
                 <input type="submit" value="Submit CFP"/>
-                <!--/*/ <th:block th:unless="${submission.conference.confStatus.fixedCfp}"> /*/-->
+                <!--/*/ <th:block th:if="${submission} and !${submission.conference.confStatus.fixedCfp}"> /*/-->
                 <input type="submit" name="draft" value="Save as Draft"/>
                 <input th:if="${submissionId}" type="submit" name="withdraw" value="Withdraw CFP"/>
                 <!--/*/ </th:block> /*/-->
