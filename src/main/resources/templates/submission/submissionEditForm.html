@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <title th:text="${submission.conference.confName}">Ooops, page not found</title>
     <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
     <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
     <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
@@ -12,8 +12,7 @@
 <body>
 <div>
     <section>
-        <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
-            2016 Fall</h2>
+        <h2 th:text="${submission.conference.confName +' (' + #temporals.format(submission.conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC 2016 Fall</h2>
         <a href="?locale=ja">Japanese</a> <a href="?locale=en">English</a>
     </section>
     <section>
@@ -26,10 +25,10 @@
                 </ul>
             </div>
         </div>
-        <form th:object="${submissionForm}"
-              th:action="@{/conferences/{conferenceId}/submissions/form(conferenceId=${conference.confId})}"
+        <form th:object="${submissionForm}" th:action="@{/submissions/{submissionId}/form(submissionId=${submissionId})}"
               method="post">
             <h2>Call for Papers</h2>
+            <p th:if="${submission}">Status: <span th:text="${submission.submissionStatus.message(@messageSource, #locale)}"></span></p>
             <h3 th:text="#{session}">aaa</h3>
             <table style="width: 80%">
                 <tr>
@@ -159,7 +158,6 @@
             <div>
                 <button type="submit" name="add-speaker">スピーカーを増やす</button>
                 <button th:if="${#lists.size(submissionForm.speakerForms) > 1}" type="submit" name="remove-speaker">スピーカーを減らす</button>
-                <input type="hidden" name="confId" th:value="${conference.confId}" />
             </div>
             <br th:if="${submissionId}"/>
             <a th:if="${submissionId}" th:href="@{/submissions/{submissionId}/preview(submissionId=${submissionId})}">🔍

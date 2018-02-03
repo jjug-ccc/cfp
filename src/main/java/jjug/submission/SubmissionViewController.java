@@ -1,18 +1,16 @@
 package jjug.submission;
 
-import java.util.Objects;
-import java.util.UUID;
-
+import jjug.CfpUser;
+import jjug.vote.VoteRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import jjug.CfpUser;
-import jjug.vote.VoteRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class SubmissionViewController {
 	private final VoteRepository voteRepository;
 
 	@GetMapping("submissions/{submissionId}")
-	String veiw(@PathVariable UUID submissionId, Model model,
+	String view(@PathVariable UUID submissionId, Model model,
 			@AuthenticationPrincipal CfpUser user) {
 		Submission submission = submissionRepository.findOne(submissionId).get();
 		if (!submission.getSubmissionStatus().isPublished()
@@ -35,10 +33,10 @@ public class SubmissionViewController {
 	}
 
 	@GetMapping("submissions/{submissionId}/preview")
-	String preveiw(@PathVariable UUID submissionId, Model model,
+	String preview(@PathVariable UUID submissionId, Model model,
 			@AuthenticationPrincipal CfpUser user) {
 		Submission submission = submissionRepository.findOne(submissionId).get();
-		if (!Objects.equals(submission.getSpeaker().getGithub(), user.getGithub())) {
+		if (!user.isPublishedUser(submission.getSpeakers())) {
 			throw new UnpublishedSubmissionException();
 		}
 		model.addAttribute("voted", isVoted(submissionId, user));
@@ -47,7 +45,7 @@ public class SubmissionViewController {
 	}
 
 	@GetMapping("admin/submissions/{submissionId}")
-	String adminVeiw(@PathVariable UUID submissionId, Model model,
+	String adminView(@PathVariable UUID submissionId, Model model,
 			@AuthenticationPrincipal CfpUser user) {
 		Submission submission = submissionRepository.findOne(submissionId).get();
 		model.addAttribute("voted", isVoted(submissionId, user));

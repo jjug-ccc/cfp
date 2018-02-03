@@ -1,22 +1,17 @@
 package jjug;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import jjug.conference.*;
+import jjug.conference.enums.ConfStatus;
+import jjug.submission.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import jjug.conference.Conference;
-import jjug.conference.ConferenceRepository;
-import jjug.conference.enums.ConfStatus;
-import jjug.submission.Submission;
-import jjug.submission.SubmissionRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,7 +30,7 @@ public class HomeController {
 		Page<Conference> openConferences = conferenceRepository
 				.findByConfStatus(ConfStatus.OPEN, pageable);
 		List<Submission> submissions = submissionRepository
-				.findBySpeaker_GithubOrderByConference_ConfDateDescSubmissionStatusAscCreatedAtAsc(
+				.findBySpeakers_GithubOrderByConference_ConfDateDescSubmissionStatusAscCreatedAtAsc(
 						user.getGithub());
 
 		model.addAttribute("cfpConferences", cfpConferences);

@@ -1,5 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -56,67 +55,88 @@
     <table>
         <tr>
             <th th:text="#{title}">aa</th>
-            <th th:text="#{name}">aa</th>
-            <th th:text="#{github}">aa</th>
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
         </tr>
-        <tr th:each="submission : ${submittedSubmissions}">
-            <td><a th:text="${submission.title}"
-                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
-            <td th:text="${submission.speaker.name}"></td>
-            <td th:text="${submission.speaker.github}"></td>
-            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.speaker.note}"></td>
+        <!--/*/ <th:block th:each="submission : ${submittedSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
+        <tr>
+            <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
+                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speakers[0].name}"></td>
+            <td th:text="${submission.speakers[0].github}"></td>
+            <td th:text="${submission.speakers[0].note}"></td>
         </tr>
+        <tr th:if="${speakerNum} > 1" th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
+            <td th:text="${submission.speakers[seq].name}"></td>
+            <td th:text="${submission.speakers[seq].github}"></td>
+            <td th:text="${submission.speakers[seq].note}"></td>
+        </tr>
+        <!--/*/ </th:block> /*/-->
     </table>
     <h4 th:text="#{submissionstatus.draft}"></h4>
     <table>
         <tr>
             <th th:text="#{title}">aa</th>
-            <th th:text="#{name}">aa</th>
-            <th th:text="#{github}">aa</th>
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
         </tr>
-        <tr th:each="submission : ${draftSubmissions}">
-            <td><a th:text="${submission.title}"
-                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
-            <td th:text="${submission.speaker.name}"></td>
-            <td th:text="${submission.speaker.github}"></td>
-            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.speaker.note}"></td>
+        <!--/*/ <th:block th:each="submission : ${draftSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
+        <tr>
+            <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
+                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speakers[0].name}"></td>
+            <td th:text="${submission.speakers[0].github}"></td>
+            <td th:text="${submission.speakers[0].note}"></td>
         </tr>
+        <tr th:if="${speakerNum} > 1" th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
+            <td th:text="${submission.speakers[seq].name}"></td>
+            <td th:text="${submission.speakers[seq].github}"></td>
+            <td th:text="${submission.speakers[seq].note}"></td>
+        </tr>
+        <!--/*/ </th:block> /*/-->
     </table>
     <h4 th:text="#{submissionstatus.withdrawn}"></h4>
     <table>
         <tr>
             <th th:text="#{title}">aa</th>
-            <th th:text="#{name}">aa</th>
-            <th th:text="#{github}">aa</th>
             <th th:text="#{category}">aa</th>
             <th th:text="#{level}">aa</th>
             <th th:text="#{talkType}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
         </tr>
-        <tr th:each="submission : ${withdrawnSubmissions}">
-            <td><a th:text="${submission.title}"
-                   th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
-            <td th:text="${submission.speaker.name}"></td>
-            <td th:text="${submission.speaker.github}"></td>
-            <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
-            <td th:text="${submission.speaker.note}"></td>
+        <!--/*/ <th:block th:each="submission : ${withdrawnSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
+        <tr>
+            <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
+                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speakers[0].name}"></td>
+            <td th:text="${submission.speakers[0].github}"></td>
+            <td th:text="${submission.speakers[0].note}"></td>
         </tr>
+        <tr th:if="${speakerNum} > 1" th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
+            <td th:text="${submission.speakers[seq].name}"></td>
+            <td th:text="${submission.speakers[seq].github}"></td>
+            <td th:text="${submission.speakers[seq].note}"></td>
+        </tr>
+        <!--/*/ </th:block> /*/-->
     </table>
     <hr/>
     <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>

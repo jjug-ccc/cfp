@@ -1,22 +1,20 @@
 package jjug.submission;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.UUID;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
 import jjug.submission.enums.*;
 import lombok.*;
+import org.hibernate.annotations.*;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.CascadeType;
+import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.validation.constraints.*;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.*;
 
 @Getter
 @Setter
@@ -43,11 +41,15 @@ public class Submission implements Serializable {
 	@NotEmpty
 	@Size(max = 255)
 	private String target;
-	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH,
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH,
 			CascadeType.REFRESH })
 	@NotNull
-	@JoinColumn(name = "speaker_id")
-	private Speaker speaker;
+	@JoinTable(
+			name = "submission_speaker",
+			joinColumns = @JoinColumn(name = "submission_id"),
+			inverseJoinColumns = @JoinColumn(name = "speaker_id")
+	)
+	private List<Speaker> speakers;
 	@NotNull
 	private Category category;
 	@NotNull
