@@ -13,12 +13,6 @@ public interface VoteSummary {
 
 	String getTitle();
 
-	String getName();
-
-	String getGithub();
-
-	String getEmail();
-
 	Category getCategory();
 
 	Level getLevel();

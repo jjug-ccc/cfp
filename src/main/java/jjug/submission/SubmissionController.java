@@ -115,10 +115,16 @@ public class SubmissionController {
 
 	@GetMapping("submissions/{submissionId}/form")
 	String editForm(@PathVariable UUID submissionId, Model model,
-			SubmissionForm submissionForm) {
+			SubmissionForm submissionForm,
+			boolean updated) {
 		Submission submission = submissionRepository.findOne(submissionId).get();
-		BeanUtils.copyProperties(submission, submissionForm);
+		model.addAttribute("submission", submission);
+		model.addAttribute("conference", submission.getConference());
+		if (updated) {
+			return "submission/submissionEditForm";
+		}
 
+		BeanUtils.copyProperties(submission, submissionForm);
 		List<Speaker> speakers = submission.getSpeakers();
 		Collections.reverse(speakers);
 		Deque<SpeakerForm> speakerForms = new LinkedList<>();
@@ -129,8 +135,6 @@ public class SubmissionController {
 		}
 		submissionForm.setSpeakerForms(speakerForms);
 
-		model.addAttribute("submission", submission);
-		model.addAttribute("conference", submission.getConference());
 		return "submission/submissionEditForm";
 	}
 
@@ -140,7 +144,7 @@ public class SubmissionController {
 			@Validated SubmissionForm submissionForm, BindingResult bindingResult,
 			@AuthenticationPrincipal CfpUser user) {
 		if (bindingResult.hasErrors()) {
-			return editForm(submissionId, model, submissionForm);
+			return editForm(submissionId, model, submissionForm, true);
 		}
 		Submission submission = submissionRepository.findOne(submissionId).get();
 		if (submission.getConference().getConfStatus().isFixedCfp()) {

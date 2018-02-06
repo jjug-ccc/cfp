@@ -156,8 +156,8 @@
             </table>
             <!--/*/ </th:block> /*/-->
             <div>
-                <button type="submit" name="add-speaker">スピーカーを増やす</button>
-                <button th:if="${#lists.size(submissionForm.speakerForms) > 1}" type="submit" name="remove-speaker">スピーカーを減らす</button>
+                <input type="submit" name="add-speaker" value="スピーカーを増やす"/>
+                <input th:if="${#lists.size(submissionForm.speakerForms) > 1}" type="submit" name="remove-speaker" value="スピーカーを減らす" />
             </div>
             <br th:if="${submissionId}"/>
             <a th:if="${submissionId}" th:href="@{/submissions/{submissionId}/preview(submissionId=${submissionId})}">🔍
