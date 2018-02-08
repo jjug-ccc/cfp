@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public Filter corsFilter() {
+	public Filter cors() {
 		return new Filter() {
 			@Override
 			public void init(FilterConfig filterConfig) throws ServletException {
