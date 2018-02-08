@@ -31,6 +31,11 @@ resources:
       uri: git@github.com:jjug-ccc/cfp.git
       access_token: {{github-access-token}}
       private_key: {{github-private-key}}
+  - name: mysql
+    type: docker-image
+    source:
+      repository: mariadb
+      tag: 10.0.30
 jobs:
   - name: cfp-unit-test-pr
     public: true
@@ -39,19 +44,24 @@ jobs:
       - get: repo
         resource: cfp-repo-pr
         trigger: true
+      - get: mysql
+        params:
+          save: true
     - put: cfp-repo-pr
       params:
         path: repo
         status: pending
     - task: unit
-      config:
+      privileged: true
+      config: &MVN_TEST_CONFIG
         platform: linux
         image_resource:
           type: docker-image
           source:
-            repository: maven
+            repository: making/dcind-jdk
         inputs:
         - name: repo
+        - name: mysql
         caches:
         - path: repo/cache
         run:
@@ -60,9 +70,19 @@ jobs:
           args:
           - -c
           - |
+            set -e
+            source /docker-lib.sh
+            start_docker
+            docker load -i mysql/image
+            docker tag "$(cat mysql/image-id)" "$(cat mysql/repository):$(cat mysql/tag)"
+            docker images
+            cd repo
             rm -rf ~/.m2
-            ln -fs $(pwd)/cache ~/.m2
-            mvn test -DskipTests=true
+            ln -fs $(pwd)/m2 ~/.m2
+            docker-compose up -d -f ci/docker-compose.yml
+            sleep 3
+            mvn test
+            docker-compose down -f ci/docker-compose.yml
       on_success:
         put: cfp-repo-pr
         params:
@@ -79,26 +99,13 @@ jobs:
         - get: repo
           resource: cfp-repo
           trigger: true
+        - get: mysql
+          params:
+            save: true
       - task: unit
+        privileged: true
         config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: maven
-          inputs:
-          - name: repo
-          caches:
-          - path: repo/cache
-          run:
-            path: bash
-            dir: repo
-            args:
-            - -c
-            - |
-              rm -rf ~/.m2
-              ln -fs $(pwd)/cache ~/.m2
-              mvn test -DskipTests=true
+          <<: *MVN_TEST_CONFIG
   - name: cfp-deploy-to-cf
     serial: true
     plan:
