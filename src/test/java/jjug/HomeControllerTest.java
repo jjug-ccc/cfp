@@ -1,10 +1,6 @@
 package jjug;
 
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import okhttp3.mockwebserver.MockWebServer;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,25 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HomeControllerTest {
-	WebClient webClient;
-	MockWebServer server = new MockWebServer();
+public class HomeControllerTest extends MockGithubServerTest {
 	@LocalServerPort
 	int port;
-
-	@Before
-	public void setup() throws Exception {
-		this.server.start(55321);
-		this.webClient = new WebClient();
-		this.webClient.getOptions().setCssEnabled(false);
-		this.webClient.getOptions().setJavaScriptEnabled(false);
-	}
-
-	@After
-	public void shutdown() throws Exception {
-		this.server.shutdown();
-		this.webClient.close();
-	}
 
 	@Test
 	public void homeUser() throws Exception {
