@@ -53,6 +53,8 @@ jobs:
         status: pending
     - task: unit
       privileged: true
+      params: &JAVA_OPS
+        _JAVA_OPTIONS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP -Djava.security.egd=file:/dev/./urandom
       config: &MVN_TEST_CONFIG
         platform: linux
         image_resource:
@@ -63,10 +65,9 @@ jobs:
         - name: repo
         - name: mysql
         caches:
-        - path: repo/cache
+        - path: repo/m2
         run:
-          path: bash
-          dir: repo
+          path: sh
           args:
           - -c
           - |
@@ -79,10 +80,11 @@ jobs:
             cd repo
             rm -rf ~/.m2
             ln -fs $(pwd)/m2 ~/.m2
-            docker-compose up -d -f ci/docker-compose.yml
+            cd ci
+            docker-compose up -d
             sleep 3
-            mvn test
-            docker-compose down -f ci/docker-compose.yml
+            mvn test -f ..
+            docker-compose down
       on_success:
         put: cfp-repo-pr
         params:
@@ -95,54 +97,56 @@ jobs:
           status: failure
   - name: cfp-unit-test
     plan:
-      - aggregate:
-        - get: repo
-          resource: cfp-repo
-          trigger: true
-        - get: mysql
-          params:
-            save: true
-      - task: unit
-        privileged: true
-        config:
-          <<: *MVN_TEST_CONFIG
+    - aggregate:
+      - get: repo
+        resource: cfp-repo
+        trigger: true
+      - get: mysql
+        params:
+          save: true
+    - task: unit
+      privileged: true
+      params: &JAVA_OPS
+        _JAVA_OPTIONS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP -Djava.security.egd=file:/dev/./urandom
+      config:
+        <<: *MVN_TEST_CONFIG
   - name: cfp-deploy-to-cf
     serial: true
     plan:
-      - aggregate:
-        - get: repo
-          resource: cfp-repo
-          trigger: true
-          passed:
-          - cfp-unit-test
-      - task: package
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: maven
-          inputs:
-          - name: repo
-          outputs:
-          - name: output
-          caches:
-          - path: repo/cache
-          run:
-            path: bash
-            dir: repo
-            args:
-            - -c
-            - |
-              rm -rf ~/.m2
-              ln -fs $(pwd)/cache ~/.m2
-              mvn package -DskipTests=true
-              cp target/*.jar ../output/app.jar
-      - put: cf
-        params:
-          manifest: repo/manifest.yml
-          path: output/app.jar
-          current_app_name: jjug-cfp
-          env:
-            cfp.cloud.max-pool-size: 40
-            server.tomcat.max-threads: 60
+    - aggregate:
+      - get: repo
+        resource: cfp-repo
+        trigger: true
+        passed:
+        - cfp-unit-test
+    - task: package
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: maven
+        inputs:
+        - name: repo
+        outputs:
+        - name: output
+        caches:
+        - path: repo/cache
+        run:
+          path: sh
+          dir: repo
+          args:
+          - -c
+          - |
+            rm -rf ~/.m2
+            ln -fs $(pwd)/cache ~/.m2
+            mvn package -DskipTests=true
+            cp target/*.jar ../output/app.jar
+    - put: cf
+      params:
+        manifest: repo/manifest.yml
+        path: output/app.jar
+        current_app_name: jjug-cfp
+        env:
+          cfp.cloud.max-pool-size: 40
+          server.tomcat.max-threads: 60
