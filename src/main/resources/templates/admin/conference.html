@@ -177,9 +177,9 @@
                 </td>
                 <td><a th:text="${vote.title}"
                        th:href="@{/submissions/{submissionId}(submissionId=${vote.submissionId})}"></a></td>
-                <td th:text="${T(jjug.util.FormatUtils).speakerName(speakers[vote.submissionId])}"></td>
-                <td th:text="${T(jjug.util.FormatUtils).speakerGithub(speakers[vote.submissionId])}"></td>
-                <td th:text="${T(jjug.util.FormatUtils).speakerEmail(speakers[vote.submissionId])}"></td>
+                <td th:text="${speakers[vote.submissionId].name}"></td>
+                <td th:text="${speakers[vote.submissionId].github}"></td>
+                <td th:text="${speakers[vote.submissionId].email}"></td>
                 <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
                 <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
                 <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>

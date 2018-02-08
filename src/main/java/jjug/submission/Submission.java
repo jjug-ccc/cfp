@@ -3,6 +3,7 @@ package jjug.submission;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
+import jjug.speaker.Speakers;
 import jjug.submission.enums.*;
 import lombok.*;
 import org.hibernate.annotations.*;
@@ -70,4 +71,8 @@ public class Submission implements Serializable {
 	private Instant createdAt;
 	@Column(insertable = false, updatable = false)
 	private Instant updatedAt;
+
+	public Speakers speakers() {
+		return new Speakers(this.speakers);
+	}
 }
