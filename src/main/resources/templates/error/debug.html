@@ -1,4 +1,4 @@
-<table data-thd-if="${@environment.acceptProfiles('default') || @environment.acceptProfiles('debug')}">
+<table>
     <tr>
         <th>Status</th>
         <td data-th-text="${status}"></td>
@@ -7,7 +7,7 @@
         <th>Error</th>
         <td data-th-text="${error}"></td>
     </tr>
-    <tr data-th-if="${exception}">
+    <tr data-th-if="${@environment.acceptsProfiles('default', 'debug') and exception != null}">
         <th>Exception</th>
         <td data-th-text="${exception}"></td>
     </tr>
@@ -15,7 +15,7 @@
         <th>Message</th>
         <td data-th-text="${message}"></td>
     </tr>
-    <tr data-th-if="${trace}">
+    <tr data-th-if="${@environment.acceptsProfiles('default', 'debug') and trace != null}">
         <th>Trace</th>
         <td>
             <pre data-th-text="${trace}"></pre>
