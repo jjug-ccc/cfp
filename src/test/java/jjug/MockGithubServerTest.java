@@ -1,6 +1,7 @@
 package jjug;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebClientOptions;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,9 @@ public abstract class MockGithubServerTest {
 	}
 
 	protected void configureWebClient() {
-		this.webClient.getOptions().setCssEnabled(false);
-		this.webClient.getOptions().setJavaScriptEnabled(false);
+		WebClientOptions options = this.webClient.getOptions();
+		options.setCssEnabled(false);
+		options.setJavaScriptEnabled(false);
+		options.setThrowExceptionOnFailingStatusCode(false);
 	}
 }
