@@ -4,6 +4,7 @@ applications:
   path: target/cfp-0.0.1-SNAPSHOT.jar
   services:
   - cfp-db # cf create-service p-mysql 100mb-dev cfp-db
+  - send-grid
   - jjug-metrics-forwarder
   env:
     _JAVA_OPTIONS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP -Djava.security.egd=file:/dev/./urandom

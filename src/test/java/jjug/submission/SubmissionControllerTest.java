@@ -1,11 +1,16 @@
 package jjug.submission;
 
+import javax.mail.internet.MimeMessage;
+
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import jjug.CfpUser;
 import jjug.MockGithubServerDispatcher;
 import jjug.MockGithubServerTest;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,6 +29,8 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 public class SubmissionControllerTest extends MockGithubServerTest {
 	@LocalServerPort
 	int port;
+	@Rule
+	public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
 
 	@Test
 	public void showSubmissions() throws Exception {
@@ -86,7 +93,20 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 		HtmlPage submit = form.getInputsByValue("Submit CFP").get(0).click();
 		assertThat(submit.asText()).contains("[Test Conf 1] テストセッション [応募済]");
 
-		// Edit Form
+		// Check Email
+		assertThat(greenMail.waitForIncomingEmail(3000, 1)).isTrue();
+		MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		assertThat(receivedMessages.length).isEqualTo(1);
+		assertThat(receivedMessages[0].getContent()).isEqualTo("Foo Bar様\n" + //
+				"CFPへご応募ありがとうございます。 \n" + //
+				"タイトル: テストセッション");
+		assertThat(receivedMessages[0].getSubject()).isEqualTo("[Test Conf 1] CFPご応募ありがとうございます。");
+		assertThat(receivedMessages[0].getFrom().length).isEqualTo(1);
+		assertThat(receivedMessages[0].getFrom()[0].toString()).isEqualTo("office@java-users.jp");
+		assertThat(receivedMessages[0].getAllRecipients().length).isEqualTo(1);
+		assertThat(receivedMessages[0].getAllRecipients()[0].toString()).isEqualTo("foo@example.com");
+
+		// Check Edit Form
 		HtmlPage submission = submit.getAnchorByText("テストセッション").click();
 		assertThat(submission.asText()).startsWith("Test Conf 1\n" + //
 				"\n" + //

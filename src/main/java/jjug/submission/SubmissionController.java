@@ -3,6 +3,8 @@ package jjug.submission;
 import jjug.CfpUser;
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
+import jjug.mail.MailService;
+import jjug.mail.Mails;
 import jjug.speaker.Speaker;
 import jjug.speaker.SpeakerRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class SubmissionController {
 	private final SubmissionRepository submissionRepository;
 	private final ConferenceRepository conferenceRepository;
 	private final SpeakerRepository speakerRepository;
+	private final MailService mailService;
 
 	@ModelAttribute
 	SubmissionForm submissionForm(@AuthenticationPrincipal CfpUser user) {
@@ -86,6 +89,7 @@ public class SubmissionController {
 		submission.setSubmissionStatus(draft.map(d -> DRAFT).orElse(SUBMITTED));
 		log.info("Submit {}", submission);
 		submissionRepository.save(submission);
+		mailService.sendMail(Mails.from(submission).to());
 		return "redirect:/";
 	}
 
