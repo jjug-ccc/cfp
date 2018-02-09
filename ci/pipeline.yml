@@ -98,6 +98,7 @@ jobs:
           status: failure
   - name: cfp-unit-test
     build_logs_to_retain: 5
+    public: true
     plan:
     - aggregate:
       - get: repo
