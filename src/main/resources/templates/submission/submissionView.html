@@ -31,6 +31,7 @@
         <h4 th:text="#{talkType}">aaa</h4>
         <p th:text="${submission.talkType.message(@messageSource, #locale)}"></p>
         <h4 th:text="#{language}">aaa</h4>
+        <p th:text="${submission.language.message(@messageSource, #locale)}"></p>
         <h3 th:text="#{speaker}">aaa</h3>
         <!--/*/ <th:block th:each="speaker : ${submission.speakers}"> /*/-->
         <div class="speaker-left">

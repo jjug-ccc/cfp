@@ -7,6 +7,7 @@ import jjug.submission.event.SubmissionUpdatedBySpeakerEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -24,8 +25,10 @@ public class SubmissionEventHandler {
 	public void onCreated(SubmissionCreatedEvent event) {
 		Submission submission = event.submission();
 		log.info("Created {}({})", submission.getTitle(), submission.getSubmissionId());
-		this.mailService.sendMail(Mails.from("office@java-users.jp")
-                .to(submission));
+		SimpleMailMessage mailMessage = Mails.from("office@java-users.jp") //
+				.message("Call for Paperへのご応募ありがとうございます。") //
+				.to(submission);
+		this.mailService.sendMail(mailMessage);
 	}
 
 	@TransactionalEventListener
@@ -33,5 +36,9 @@ public class SubmissionEventHandler {
 		Submission submission = event.submission();
 		log.info("Updated by speaker {}({})", submission.getTitle(),
 				submission.getSubmissionId());
-	}
+		SimpleMailMessage mailMessage = Mails.from("office@java-users.jp") //
+				.message("Call for Paperが変更されました。") //
+				.to(submission);
+        this.mailService.sendMail(mailMessage);
+    }
 }
