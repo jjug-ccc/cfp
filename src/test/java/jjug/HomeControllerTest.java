@@ -6,12 +6,15 @@ import org.junit.runner.RunWith;
 
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(scripts = { "classpath:/delete-test-data.sql" }, executionPhase = BEFORE_TEST_METHOD)
 public class HomeControllerTest extends MockGithubServerTest {
 	@LocalServerPort
 	int port;
