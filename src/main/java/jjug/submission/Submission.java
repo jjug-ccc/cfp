@@ -1,21 +1,27 @@
 package jjug.submission;
 
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
 import jjug.speaker.Speakers;
 import jjug.submission.enums.*;
+import jjug.submission.event.SubmissionCreatedEvent;
+import jjug.submission.event.SubmissionUpdatedBySpeakerEvent;
 import lombok.*;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.CascadeType;
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.*;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Getter
 @Setter
@@ -26,7 +32,7 @@ import java.util.*;
 @Builder
 @Entity
 @DynamicUpdate
-public class Submission implements Serializable {
+public class Submission extends AbstractAggregateRoot implements Serializable {
 	@Id
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid")
@@ -45,11 +51,7 @@ public class Submission implements Serializable {
 	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH,
 			CascadeType.REFRESH })
 	@NotNull
-	@JoinTable(
-			name = "submission_speaker",
-			joinColumns = @JoinColumn(name = "submission_id"),
-			inverseJoinColumns = @JoinColumn(name = "speaker_id")
-	)
+	@JoinTable(name = "submission_speaker", joinColumns = @JoinColumn(name = "submission_id"), inverseJoinColumns = @JoinColumn(name = "speaker_id"))
 	private List<Speaker> speakers;
 	@NotNull
 	private Category category;
@@ -74,5 +76,15 @@ public class Submission implements Serializable {
 
 	public Speakers speakers() {
 		return new Speakers(this.speakers);
+	}
+
+	public Submission created() {
+		super.registerEvent(new SubmissionCreatedEvent(this));
+		return this;
+	}
+
+	public Submission updatedBySpeaker() {
+		super.registerEvent(new SubmissionUpdatedBySpeakerEvent(this));
+		return this;
 	}
 }

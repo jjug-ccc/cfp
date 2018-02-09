@@ -8,18 +8,22 @@ import jjug.submission.Submission;
 import org.springframework.mail.SimpleMailMessage;
 
 public class Mails {
-	private final SimpleMailMessage message;
+	private final String from;
 
-	private Mails(SimpleMailMessage message) {
-		this.message = message;
+	public Mails(String from) {
+		this.from = from;
 	}
 
-	public static Mails from(Submission submission) {
+	public static Mails from(String from) {
+		return new Mails(from);
+	}
+
+	public SimpleMailMessage to(Submission submission) {
 		String[] to = submission.getSpeakers().stream().map(Speaker::getEmail)
 				.toArray(String[]::new);
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(to);
-		message.setFrom("office@java-users.jp");
+		message.setFrom(this.from);
 		message.setSubject(
 				"[" + submission.getConference().getConfName() + "] CFPご応募ありがとうございます。");
 		message.setText(submission.getSpeakers().stream() //
@@ -28,10 +32,6 @@ public class Mails {
 				.collect(Collectors.joining(",")) + "\n" //
 				+ "CFPへご応募ありがとうございます。 \n" //
 				+ "タイトル: " + submission.getTitle());
-		return new Mails(message);
-	}
-
-	public SimpleMailMessage to() {
-		return this.message;
+		return message;
 	}
 }
