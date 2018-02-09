@@ -100,11 +100,14 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 		assertThat(receivedMessages[0].getContent()).isEqualTo("Foo Bar様\n" + //
 				"CFPへご応募ありがとうございます。 \n" + //
 				"タイトル: テストセッション");
-		assertThat(receivedMessages[0].getSubject()).isEqualTo("[Test Conf 1] CFPご応募ありがとうございます。");
+		assertThat(receivedMessages[0].getSubject())
+				.isEqualTo("[Test Conf 1] CFPご応募ありがとうございます。");
 		assertThat(receivedMessages[0].getFrom().length).isEqualTo(1);
-		assertThat(receivedMessages[0].getFrom()[0].toString()).isEqualTo("office@java-users.jp");
+		assertThat(receivedMessages[0].getFrom()[0].toString())
+				.isEqualTo("office@java-users.jp");
 		assertThat(receivedMessages[0].getAllRecipients().length).isEqualTo(1);
-		assertThat(receivedMessages[0].getAllRecipients()[0].toString()).isEqualTo("foo@example.com");
+		assertThat(receivedMessages[0].getAllRecipients()[0].toString())
+				.isEqualTo("foo@example.com");
 
 		// Check Edit Form
 		HtmlPage submission = submit.getAnchorByText("テストセッション").click();
