@@ -1,4 +1,4 @@
-# JJUG Call for Papager
+# JJUG Call for Papers
 
 ## CI Status
 
