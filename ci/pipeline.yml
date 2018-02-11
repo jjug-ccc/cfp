@@ -4,6 +4,11 @@ resource_types:
   type: docker-image
   source:
     repository: jtarchie/pr
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: v1.1.3
 resources:
   - name: cfp-repo
     type: git
@@ -36,6 +41,10 @@ resources:
     source:
       repository: mariadb
       tag: 10.0.30
+  - name: slack-alert
+    type: slack-notification
+    source:
+      url: ((slack-webhook-url))
 jobs:
   - name: cfp-unit-test-pr
     build_logs_to_retain: 5
@@ -87,15 +96,23 @@ jobs:
             mvn test -f ..
             docker-compose down
       on_success:
-        put: cfp-repo-pr
-        params:
-          path: repo
-          status: success
+        do:
+        - put: cfp-repo-pr
+          params:
+            path: repo
+            status: success
+        - put: slack-alert
+          params:
+            <<: *SLACK_SUCCESS
       on_failure:
-        put: cfp-repo-pr
-        params:
-          path: repo
-          status: failure
+        do:
+        - put: cfp-repo-pr
+          params:
+            path: repo
+            status: failure
+        - put: slack-alert
+          params:
+            <<: *SLACK_FAILURE
   - name: cfp-unit-test
     build_logs_to_retain: 5
     public: true
@@ -113,6 +130,10 @@ jobs:
         _JAVA_OPTIONS: -Duser.timezone=Asia/Tokyo -Duser.language=ja -Duser.country=JP -Djava.security.egd=file:/dev/./urandom
       config:
         <<: *MVN_TEST_CONFIG
+      on_failure:
+        put: slack-alert
+        params:
+          <<: *SLACK_FAILURE
   - name: cfp-deploy-to-cf
     serial: true
     plan:
@@ -145,6 +166,10 @@ jobs:
             ln -fs $(pwd)/cache ~/.m2
             mvn package -DskipTests=true
             cp target/*.jar ../output/app.jar
+      on_failure:
+        put: slack-alert
+        params:
+          <<: *SLACK_FAILURE
     - put: cf
       params:
         manifest: repo/manifest.yml
@@ -153,3 +178,21 @@ jobs:
         env:
           cfp.cloud.max-pool-size: 40
           server.tomcat.max-threads: 60
+      on_failure:
+        put: slack-alert
+        params:
+          <<: *SLACK_FAILURE
+      on_success:
+        put: slack-alert
+        params:
+          <<: *SLACK_SUCCESS
+
+params:
+  slack_on_success_params: &SLACK_SUCCESS
+    channel: '#cfp'
+    text: |
+      <!here> :white_check_mark: *$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME* succeeded with build <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|$BUILD_NAME>!
+  slack_on_failure_params: &SLACK_FAILURE
+    channel: '#cfp'
+    text: |
+      <!here> :rotating_light: *$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME* failed with build <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|$BUILD_NAME>!
