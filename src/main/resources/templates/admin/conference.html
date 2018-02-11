@@ -50,6 +50,37 @@
     </form>
 </section>
 <section>
+    <h3>スポンサー</h3>
+    <a th:href="@{/admin/conferences/{confId}/sponsors(confId=${conference.confId})}">💰スポンサーを追加</a>
+    <table>
+        <tr>
+            <th>タイプ</th>
+            <th>スポンサーID</th>
+            <th>名前</th>
+            <th>ロゴ</th>
+            <th>URL</th>
+            <th>パスワード</th>
+            <th>編集</th>
+        </tr>
+        <tr th:each="sponsor: ${sponsors}">
+            <td th:text="${sponsor.sponsorType}"></td>
+            <td><code th:text="${sponsor.sponsorId}"></code></td>
+            <td th:text="${sponsor.sponsorName}"><a></a></td>
+            <td><a th:if="${!#strings.isEmpty(sponsor.sponsorLogoUrl)}" th:href="${sponsor.sponsorLogoUrl}">✅</a></td>
+            <td><a th:if="${!#strings.isEmpty(sponsor.sponsorUrl)}" th:href="${sponsor.sponsorUrl}">✅</a></td>
+            <td>
+                <span th:if="${sponsor.credential == null}">未設定</span>
+                <span th:unless="${sponsor.credential == null}">✅</span>
+            </td>
+            <td>
+                <a th:href="@{/admin/conferences/{confId}/sponsors/{sponsorId}(confId=${conference.confId},sponsorId=${sponsor.sponsorId})}">編集フォーム</a>
+                <br/>
+                <a th:href="@{/admin/conferences/{confId}/sponsors/{sponsorId}/credentialresets(confId=${conference.confId},sponsorId=${sponsor.sponsorId})}">パスワードリセット</a>
+            </td>
+        </tr>
+    </table>
+</section>
+<section>
     <h3>応募済みCFP</h3>
     <h4 th:text="#{submissionstatus.submitted}"></h4>
     <table>
@@ -65,7 +96,8 @@
         <!--/*/ <th:block th:each="submission : ${submittedSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
             <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
-                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+                                              th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a>
+            </td>
             <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
@@ -97,7 +129,8 @@
         <!--/*/ <th:block th:each="submission : ${draftSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
             <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
-                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+                                              th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a>
+            </td>
             <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
@@ -128,7 +161,8 @@
         <!--/*/ <th:block th:each="submission : ${withdrawnSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
             <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
-                    th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
+                                              th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a>
+            </td>
             <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>

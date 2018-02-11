@@ -14,10 +14,14 @@
     <section>
         <h1 th:text="${@cfpProps.applicationName}">CFP</h1>
         <p sec:authorize="authenticated">
-            <span sec:authentication="principal.name">duke</span>さんログイン中。
+            <span sec:authorize="hasRole('SPONSOR')">[スポンサー] </span><span
+                sec:authentication="principal.name">duke</span>さんログイン中。
+            <span sec:authorize="hasRole('SPONSOR')">
+              <a th:href="@{/sponsors/credentialsreset}">パスワードリセット</a>
+            </span>
         </p>
     </section>
-    <section th:unless="${#lists.isEmpty(cfpConferences.content)}">
+    <section th:unless="${#lists.isEmpty(cfpConferences.content)}" sec:authorize="hasAnyRole('USER', 'ADMIN')">
         <h3>応募受付中のCFP</h3>
         <ul>
             <li th:each="conference : ${cfpConferences}">
@@ -26,6 +30,14 @@
                    href="./admin/conference.html">📝応募</a>
             </li>
         </ul>
+    </section>
+    <section sec:authorize="hasAnyRole('SPONSOR')">
+        <h3>スポンサー中のCFP</h3>
+        <p th:with="conference=${#authentication.principal.sponsor.conference}">
+            <span th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}"></span>
+            <a th:href="@{/conferences/{confId}/submissions(confId=${conference.confId})}"
+               href="./admin/conference.html">📝応募</a>
+        </p>
     </section>
     <section th:unless="${#lists.isEmpty(votingConferences.content)}">
         <h3>投票受付中のCFP</h3>
@@ -87,6 +99,7 @@
         <script type="text/javascript">
             google.charts.load('current', {'packages': ['gauge']});
             google.charts.setOnLoadCallback(drawChart);
+
             function drawChart() {
 
                 var data = google.visualization.arrayToDataTable([

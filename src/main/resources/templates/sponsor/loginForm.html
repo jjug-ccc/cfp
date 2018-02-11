@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${@cfpProps.applicationName}">アンケート</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h1 th:text="${@cfpProps.applicationName}">アンケート</h1>
+</section>
+<section>
+    <h3>スポンサー向けログインフォーム</h3>
+    <div th:if="${param.error}" class="alert alert-danger">
+        🚨 スポンサーIDまたはパスワードが正しくありません。<br/>
+        パスワードをリセットしたい場合は、JJUG事務局へご連絡ください。
+    </div>
+    <div th:if="${param.reset}" class="alert alert-success">
+        ✅ パスワードをリセットしました。下のフォームよりログインしてください。<br/>
+    </div>
+    <form th:action="@{/sponsors/login}" method="post">
+        <table style="width: 40%">
+            <tr>
+                <th style="width: 30%"><label for="sponsorId">スポンサーID</label></th>
+                <td style="width: 70%"><input type="text" id="sponsorId" name="sponsorId"/></td>
+            </tr>
+            <tr>
+                <th style="width: 30%"><label for="password">パスワード</label></th>
+                <td style="width: 70%"><input type="password" id="password" name="password"/></td>
+            </tr>
+        </table>
+        <br/>
+        <input type="submit" value="ログイン"/>
+    </form>
+</section>
+</body>
+</html>

@@ -9,17 +9,17 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import jjug.conference.enums.ConfStatus;
+import jjug.sponsor.Sponsor;
+import jjug.submission.Submission;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import jjug.conference.enums.ConfStatus;
-import jjug.submission.Submission;
-import lombok.*;
-
 @Getter
 @Setter
-@ToString(exclude = { "sessions" })
+@ToString(exclude = { "sessions", "sponsors" })
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,4 +50,7 @@ public class Conference implements Serializable {
 	@OneToMany(mappedBy = "conference", orphanRemoval = true, cascade = CascadeType.ALL)
 	@OrderBy("submissionStatus ASC, createdAt ASC")
 	private List<Submission> sessions;
+	@OneToMany(mappedBy = "conference", orphanRemoval = true, cascade = CascadeType.ALL)
+	@OrderBy("sponsorType ASC, sponsorName ASC")
+	private List<Sponsor> sponsors;
 }

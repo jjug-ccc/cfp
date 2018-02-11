@@ -16,6 +16,9 @@
         <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
             2016 Fall</h2>
         <h3>Call for Papers</h3>
+        <div sec:authorize="hasRole('SPONSOR')">
+            ❗ <strong>スポンサーはGithubログインは不要です</strong> ❗
+        </div>
         <div th:utext="${@marked.marked(conference.confCfpNote)}"></div>
         <hr/>
         <p sec:authorize="not authenticated">

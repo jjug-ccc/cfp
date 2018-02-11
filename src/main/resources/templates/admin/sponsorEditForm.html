@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<div>
+    <section>
+        <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
+            2016 Fall</h2>
+        <h3>スポンサー編集</h3>
+        <div th:object="${conferenceSponsorForm}">
+            <div th:if="${#fields.hasErrors()}">
+                <ul>
+                    <li th:each="error : ${#fields.detailedErrors()}">
+                        <span th:text="${error.getMessage()}">Error message</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form
+                method="post"
+                th:object="${conferenceSponsorForm}"
+                th:action="@{/admin/conferences/{confId}/sponsors/{sponsorId}(confId=${conference.confId},sponsorId=${sponsor.sponsorId})}">
+            <table style="width: 80%">
+                <tr>
+                    <th style="width: 30%"><label th:for="sponsorType">タイプ</label></th>
+                    <td style="width: 70%">
+                        <select th:field="*{sponsorType}"
+                                th:classappend="${#fields.hasErrors('sponsorType') ? 'error' : ''}">
+                            <option value="">(Required)</option>
+                            <option th:each="e : ${T(jjug.sponsor.enums.SponsorType).values()}"
+                                    th:text="${e}"
+                                    th:value="${e}"></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 30%">
+                        <label th:for="sponsorName">名前</label>
+                    </th>
+                    <td style="width: 70%">
+                        <input type="text" th:field="*{sponsorName}"
+                               placeholder="(Required)"
+                               th:classappend="${#fields.hasErrors('sponsorName') ? 'error' : ''}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 30%">
+                        <label th:for="sponsorLogoUrl">ロゴ</label>
+                    </th>
+                    <td style="width: 70%">
+                        <input type="text" th:field="*{sponsorLogoUrl}"
+                               placeholder="スポンサーのロゴURL。あとで入力可能です。"
+                               th:classappend="${#fields.hasErrors('sponsorLogoUrl') ? 'error' : ''}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width: 30%">
+                        <label th:for="sponsorUrl">URL</label>
+                    </th>
+                    <td style="width: 70%">
+                        <input type="text" th:field="*{sponsorUrl}"
+                               placeholder="スポンサーのWebサイトURL。あとで入力可能です。"
+                               th:classappend="${#fields.hasErrors('sponsorUrl') ? 'error' : ''}"/>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <input type="submit" value="更新"/>
+        </form>
+        <hr/>
+        <a th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}"
+           th:href="@{/admin/conferences/{confId}(confId=${conference.confId})}">JJUG CCC 2016 Fall</a>
+    </section>
+</div>
+</body>
+</html>

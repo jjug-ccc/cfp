@@ -71,6 +71,11 @@
 			<version>0.9.2</version>
 		</dependency>
 		<dependency>
+			<groupId>org.terasoluna.gfw</groupId>
+			<artifactId>terasoluna-gfw-validator</artifactId>
+			<version>5.4.0.RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-spring-service-connector</artifactId>
 		</dependency>

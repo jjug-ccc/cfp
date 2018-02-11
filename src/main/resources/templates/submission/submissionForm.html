@@ -1,4 +1,5 @@
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8"/>
@@ -93,6 +94,9 @@
             </table>
             <!--/*/ <th:block th:each="speakerForm, stat : ${submissionForm.speakerForms}"> /*/-->
             <h3 th:text="#{speaker} + ${stat.count}">講演者情報1</h3>
+            <div sec:authorize="hasRole('SPONSOR')">
+                ❗ Githubアカウントがない場合は、"GitHubアカウント"に<code>jjug-cfp</code>を入力してください。 ❗
+            </div>
             <table style="width: 80%">
                 <tr>
                     <th style="width: 30%"><label th:for="name" th:text="#{name}">名前</label></th>
