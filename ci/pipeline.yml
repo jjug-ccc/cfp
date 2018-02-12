@@ -177,6 +177,7 @@ jobs:
         current_app_name: jjug-cfp
         env:
           cfp.cloud.max-pool-size: 40
+          cfp.slack.webhook-url: ((cfp-slack-webhook-url))
           server.tomcat.max-threads: 60
       on_failure:
         put: slack-alert
