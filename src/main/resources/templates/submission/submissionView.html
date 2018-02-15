@@ -44,8 +44,11 @@
                 <small th:text="${speaker.companyOrCommunity}"></small>
             </h5>
             <span th:utext="${@marked.marked(speaker.bio)}"></span>
-            <br/>
-            <span th:utext="${@marked.marked(speaker.activities)}"></span>
+            <ul>
+                <li th:each="activity : ${speaker.activityList}">
+                    <a th:href="${activity.url}" th:text="${activity.url}">https://github.com/jjug</a>
+                </li>
+            </ul>
         </div>
         <!--/*/ </th:block> /*/-->
     </section>

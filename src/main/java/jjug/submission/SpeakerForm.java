@@ -3,8 +3,10 @@ package jjug.submission;
 import lombok.Data;
 import org.hibernate.validator.constraints.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class SpeakerForm implements Serializable {
@@ -20,9 +22,8 @@ public class SpeakerForm implements Serializable {
 	@NotEmpty
 	@Size(max = 5120)
 	private String bio;
-	@NotEmpty
-	@Size(max = 5120)
-	private String activities;
+	@Valid
+	private List<ActivityForm> activityList;
 	@NotEmpty
 	@Size(max = 255)
 	@URL

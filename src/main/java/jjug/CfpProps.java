@@ -15,6 +15,7 @@ public class CfpProps {
 	private String applicationName = "JJUG Call for Papers";
 	private Set<String> adminUsers;
 	private Slack slack = new Slack();
+	private int activitiesMax = 5;
 
 	@Data
 	public static class Slack {

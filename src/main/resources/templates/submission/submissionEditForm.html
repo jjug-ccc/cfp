@@ -118,16 +118,23 @@
                             th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].bio') ? 'error' : ''}"></textarea></td>
                 </tr>
                 <tr>
-                    <th><label th:for="activities" th:text="#{activities}">aaa</label></th>
-                    <td><textarea th:field="*{speakerForms[__${stat.index}__].activities}"
-                            th:placeholder="${stat.index} eq 0 ? 'Markdown is available. (Required)'"
-                            th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].activities') ? 'error' : ''}"></textarea></td>
-                </tr>
-                <tr>
                     <th><label th:for="profileUrl" th:text="#{profileUrl}">aaa</label></th>
                     <td><input type="url" th:field="*{speakerForms[__${stat.index}__].profileUrl}"
                             th:placeholder="${stat.index} eq 0 ? '(Required)'"
                             th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].profileUrl') ? 'error' : ''}"/></td>
+                </tr>
+                <tr th:each="seq, seqStat : ${#numbers.sequence(1,@cfpProps.activitiesMax)}">
+                    <th><label th:for="activities" th:text="#{activities} + ${seq}">コミュニティ活動、BlogのURL、Twitterアカウントなど1</label></th>
+                    <td><select style="width: 15%" th:field="*{speakerForms[__${stat.index}__].activityList[__${seqStat.index}__].activityType}"
+                                th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].activityList[' + seqStat.index + '].activityType') ? 'error' : ''}">
+                        <option value="" th:text="${seqStat.index} eq 0 ? '(Required)'"></option>
+                        <option th:each="e : ${T(jjug.speaker.enums.ActivityType).values()}"
+                                th:text="${e.message(@messageSource, #locale)}"
+                                th:value="${e}"></option>
+                    </select>
+                        <input style="width: 60%" type="url" th:placeholder="${seqStat.index} eq 0 ? '(Required)'" th:field="*{speakerForms[__${stat.index}__].activityList[__${seqStat.index}__].url}"
+                               th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].activityList[' + seqStat.index + '].url') ? 'error' : ''}" />
+                    </td>
                 </tr>
             </table>
             <h3 th:text="#{private} + ${stat.count}">非公開情報1</h3>

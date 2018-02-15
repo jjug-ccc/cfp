@@ -1,17 +1,14 @@
 package jjug.speaker;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.annotations.*;
+import org.hibernate.validator.constraints.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import lombok.*;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,9 +36,12 @@ public class Speaker {
 	@Size(max = 5120)
 	private String bio;
 	@Lob
-	@NotEmpty
 	@Size(max = 5120)
 	private String activities;
+	@Embedded
+	@ElementCollection
+	@CollectionTable(name = "activity", joinColumns = @JoinColumn(name = "speaker_id"))
+	private List<Activity> activityList;
 	@Column(unique = true)
 	@NotEmpty
 	@Size(max = 255)

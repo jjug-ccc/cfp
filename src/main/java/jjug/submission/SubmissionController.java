@@ -1,27 +1,33 @@
 package jjug.submission;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import jjug.CfpUser;
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
+import jjug.speaker.Activity;
 import jjug.speaker.Speaker;
 import jjug.speaker.SpeakerRepository;
+import jjug.speaker.enums.ActivityType;
+import jjug.validator.SubmissionFormValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
+import org.springframework.util.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
 import static jjug.submission.enums.SubmissionStatus.*;
+import static org.springframework.util.StringUtils.hasLength;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,6 +36,12 @@ public class SubmissionController {
 	private final SubmissionRepository submissionRepository;
 	private final ConferenceRepository conferenceRepository;
 	private final SpeakerRepository speakerRepository;
+	private final SubmissionFormValidator submissionFormValidator;
+
+	@InitBinder("submissionForm")
+	public void initBinder(WebDataBinder binder) {
+		binder.addValidators(submissionFormValidator);
+	}
 
 	@ModelAttribute
 	SubmissionForm submissionForm(@AuthenticationPrincipal CfpUser user) {
@@ -38,13 +50,22 @@ public class SubmissionController {
 			SpeakerForm speakerForm = new SpeakerForm();
 			speakerForm.setName(user.getName());
 			speakerForm.setGithub(user.getGithub());
-			speakerForm.setActivities(format("https://github.com/%s", user.getGithub()));
-			speakerForm.setProfileUrl(
-					format("https://avatars.githubusercontent.com/%s?size=120",
-							user.getGithub()));
+			ActivityForm activity = new ActivityForm();
+			String profileUrl = "http://www.java-users.jp/ccc2017fall/assets/img/speakers/duke.jpg";
+			if (StringUtils.hasLength(user.getGithub())) {
+				activity.setActivityType(ActivityType.GITHUB);
+				activity.setUrl(format("https://github.com/%s", user.getGithub()));
+				profileUrl = format("https://avatars.githubusercontent.com/%s?size=120",
+						user.getGithub());
+			}
+			speakerForm.setProfileUrl(profileUrl);
+			List<ActivityForm> activityFormList = new ArrayList<>();
+			activityFormList.add(activity);
+			speakerForm.setActivityList(activityFormList);
 			speakerForm.setEmail(user.getEmail());
-			submissionForm.setSpeakerForms(
-					new LinkedList<>(Collections.singletonList(speakerForm)));
+			Deque<SpeakerForm> speakerForms = new LinkedList<>();
+			speakerForms.add(speakerForm);
+			submissionForm.setSpeakerForms(speakerForms);
 		}
 		return submissionForm;
 	}
@@ -61,11 +82,9 @@ public class SubmissionController {
 	@GetMapping("conferences/{confId}/submissions/form")
 	String submitForm(@PathVariable UUID confId, Model model,
 			SubmissionForm submissionForm, @AuthenticationPrincipal CfpUser user) {
-		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		addModelForCreate(confId, model);
 		speakerRepository.findByGithub(user.getGithub())
-				.ifPresent(speaker -> BeanUtils.copyProperties(speaker, submissionForm));
-		model.addAttribute("conference", conference);
+				.ifPresent(speaker -> copyToSpeakerForm(speaker, submissionForm));
 		return "submission/submissionForm";
 	}
 
@@ -75,7 +94,8 @@ public class SubmissionController {
 			@Validated SubmissionForm submissionForm, BindingResult bindingResult,
 			@AuthenticationPrincipal CfpUser user) {
 		if (bindingResult.hasErrors()) {
-			return submitForm(confId, model, submissionForm, user);
+			addModelForCreate(confId, model);
+			return "submission/submissionForm";
 		}
 		Conference conference = conferenceRepository.findOne(confId).get();
 		checkIfCfpIsOpen(conference);
@@ -88,6 +108,12 @@ public class SubmissionController {
 		log.info("Submit {}", submission);
 		submissionRepository.save(submission.created());
 		return "redirect:/";
+	}
+
+	private void addModelForCreate(UUID confId, Model model) {
+		Conference conference = conferenceRepository.findOne(confId).get();
+		checkIfCfpIsOpen(conference);
+		model.addAttribute("conference", conference);
 	}
 
 	@PostMapping(value = "conferences/{confId}/submissions/form", params = "add-speaker")
@@ -112,25 +138,10 @@ public class SubmissionController {
 
 	@GetMapping("submissions/{submissionId}/form")
 	String editForm(@PathVariable UUID submissionId, Model model,
-			SubmissionForm submissionForm, boolean updated) {
-		Submission submission = submissionRepository.findOne(submissionId).get();
-		model.addAttribute("submission", submission);
-		model.addAttribute("conference", submission.getConference());
-		if (updated) {
-			return "submission/submissionEditForm";
-		}
-
+			SubmissionForm submissionForm) {
+		Submission submission = addModelForEdit(submissionId, model);
 		BeanUtils.copyProperties(submission, submissionForm);
-		List<Speaker> speakers = submission.getSpeakers();
-		Collections.reverse(speakers);
-		Deque<SpeakerForm> speakerForms = new LinkedList<>();
-		for (Speaker speaker : speakers) {
-			SpeakerForm form = new SpeakerForm();
-			BeanUtils.copyProperties(speaker, form);
-			speakerForms.add(form);
-		}
-		submissionForm.setSpeakerForms(speakerForms);
-
+		submissionForm.setSpeakerForms(copyToSpeakerForms(submission.getSpeakers()));
 		return "submission/submissionEditForm";
 	}
 
@@ -140,7 +151,8 @@ public class SubmissionController {
 			@Validated SubmissionForm submissionForm, BindingResult bindingResult,
 			@AuthenticationPrincipal CfpUser user) {
 		if (bindingResult.hasErrors()) {
-			return editForm(submissionId, model, submissionForm, true);
+			addModelForEdit(submissionId, model);
+			return "submission/submissionEditForm";
 		}
 		Submission submission = submissionRepository.findOne(submissionId).get();
 		if (submission.getConference().getConfStatus().isFixedCfp()) {
@@ -158,6 +170,13 @@ public class SubmissionController {
 		log.info("Edit {}", submission);
 		submissionRepository.save(submission.updatedBySpeaker());
 		return "redirect:/submissions/{submissionId}/form";
+	}
+
+	private Submission addModelForEdit(UUID submissionId, Model model) {
+		Submission submission = submissionRepository.findOne(submissionId).get();
+		model.addAttribute("submission", submission);
+		model.addAttribute("conference", submission.getConference());
+		return submission;
 	}
 
 	@PostMapping(value = "submissions/{submissionId}/form", params = "add-speaker")
@@ -184,17 +203,65 @@ public class SubmissionController {
 		}
 	}
 
+	void copyToSpeakerForm(Speaker speaker, SubmissionForm submissionForm) {
+		SpeakerForm speakerForm = submissionForm.getSpeakerForms().getFirst();
+		BeanUtils.copyProperties(speaker, speakerForm);
+
+		List<ActivityForm> activityForms = speaker.getActivityList().stream()
+				.map(activity -> {
+					ActivityForm activityForm = new ActivityForm();
+					BeanUtils.copyProperties(activity, activityForm);
+					return activityForm;
+				}).collect(Collectors.toList());
+		speakerForm.setActivityList(activityForms);
+		submissionForm.setSpeakerForms(new LinkedList<>(singletonList(speakerForm)));
+	}
+
+	Deque<SpeakerForm> copyToSpeakerForms(List<Speaker> speakers) {
+		if (CollectionUtils.isEmpty(speakers)) {
+			return new LinkedList<>();
+		}
+		Deque<SpeakerForm> speakerForms = new LinkedList<>();
+		for (Speaker speaker : speakers) {
+			SpeakerForm speakerForm = new SpeakerForm();
+			BeanUtils.copyProperties(speaker, speakerForm);
+
+			List<ActivityForm> activityList = speaker.getActivityList().stream()
+					.map(activity -> {
+						ActivityForm activityForm = new ActivityForm();
+						BeanUtils.copyProperties(activity, activityForm);
+						return activityForm;
+					}).collect(Collectors.toList());
+			speakerForm.setActivityList(activityList);
+			speakerForms.add(speakerForm);
+		}
+		return speakerForms;
+	}
+
 	List<Speaker> copyToSpeakers(Deque<SpeakerForm> speakerForms) {
 		if (CollectionUtils.isEmpty(speakerForms)) {
 			return Collections.emptyList();
 		}
-		return speakerForms.stream().map(speakerForm -> {
-			Speaker speaker = speakerRepository.findByGithub(speakerForm.getGithub())
-					.orElseGet(() -> Speaker.builder().github(speakerForm.getGithub())
-							.build());
-			BeanUtils.copyProperties(speakerForm, speaker);
-			return speaker;
-		}).collect(Collectors.toList());
+		return speakerForms.stream()
+				.map(
+						speakerForm -> {
+							Speaker speaker = speakerRepository.findByGithub(speakerForm.getGithub())
+									.orElseGet(() -> Speaker.builder().github(speakerForm.getGithub()).build());
+							BeanUtils.copyProperties(speakerForm, speaker);
+
+							List<Activity> activityList = speakerForm.getActivityList().stream()
+									.filter(activityForm -> nonNull(activityForm.getUrl()) && hasLength(activityForm.getUrl()))
+									.distinct()
+									.map(activityForm -> {
+										Activity activity = new Activity();
+										BeanUtils.copyProperties(activityForm, activity);
+										return activity;
+									}).collect(Collectors.toList());
+							speaker.setActivityList(activityList);
+
+							return speaker;
+						}
+				).collect(Collectors.toList());
 	}
 
 }

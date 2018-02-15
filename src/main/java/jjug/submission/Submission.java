@@ -1,14 +1,5 @@
 package jjug.submission;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
@@ -20,8 +11,15 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
-
 import org.springframework.data.domain.AbstractAggregateRoot;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -52,6 +50,7 @@ public class Submission extends AbstractAggregateRoot implements Serializable {
 			CascadeType.REFRESH })
 	@NotNull
 	@JoinTable(name = "submission_speaker", joinColumns = @JoinColumn(name = "submission_id"), inverseJoinColumns = @JoinColumn(name = "speaker_id"))
+	@OrderBy("email ASC")
 	private List<Speaker> speakers;
 	@NotNull
 	private Category category;
