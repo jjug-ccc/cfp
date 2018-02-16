@@ -1,4 +1,4 @@
-package jjug.validator;
+package jjug.submission;
 
 import jjug.submission.*;
 import org.springframework.stereotype.Component;

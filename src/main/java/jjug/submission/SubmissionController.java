@@ -7,7 +7,6 @@ import jjug.speaker.Activity;
 import jjug.speaker.Speaker;
 import jjug.speaker.SpeakerRepository;
 import jjug.speaker.enums.ActivityType;
-import jjug.validator.SubmissionFormValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
