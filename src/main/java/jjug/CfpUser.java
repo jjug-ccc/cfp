@@ -1,12 +1,14 @@
 package jjug;
 
-import jjug.speaker.Speaker;
-import lombok.*;
-import org.springframework.util.CollectionUtils;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+
+import jjug.speaker.Speaker;
+import jjug.submission.Submission;
+import lombok.*;
+
+import org.springframework.util.CollectionUtils;
 
 @Getter
 @ToString
@@ -19,7 +21,8 @@ public class CfpUser implements Serializable {
 	private final String email;
 	private final String avatarUrl;
 
-	public boolean isPublishedUser(List<Speaker> speakers) {
+	public boolean isPublishedUser(Submission submission) {
+		List<Speaker> speakers = submission.getSpeakers();
 		if (CollectionUtils.isEmpty(speakers)) {
 			return false;
 		}

@@ -8,7 +8,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+@Component
 public class SponsorAuthenticationProvider implements AuthenticationProvider {
 	private final SponsorCredentialRepository sponsorCredentialRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -21,6 +24,7 @@ public class SponsorAuthenticationProvider implements AuthenticationProvider {
 	}
 
 	@Override
+	@Transactional
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
 		UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.class

@@ -109,6 +109,7 @@ public class SubmissionController {
 
 		Submission submission = new Submission();
 		BeanUtils.copyProperties(submissionForm, submission);
+		submission.setSubmissionId(UUID.randomUUID());
 		submission.setConference(conference);
 		submission.setSpeakers(copyToSpeakers(submissionForm.getSpeakerForms()));
 		submission.setSubmissionStatus(draft.map(d -> DRAFT).orElse(SUBMITTED));

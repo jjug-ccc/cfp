@@ -36,7 +36,7 @@ public class SubmissionViewController {
 	String preview(@PathVariable UUID submissionId, Model model,
 			@AuthenticationPrincipal CfpUser user) {
 		Submission submission = submissionRepository.findOne(submissionId).get();
-		if (!user.isPublishedUser(submission.getSpeakers())) {
+		if (!user.isPublishedUser(submission)) {
 			throw new UnpublishedSubmissionException();
 		}
 		model.addAttribute("voted", isVoted(submissionId, user));

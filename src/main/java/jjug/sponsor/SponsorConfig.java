@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 public class SponsorConfig {
 	@Bean
 	public SponsorAuthenticationProcessingFilter sponsorAuthenticationFilter(
-			SponsorCredentialRepository sponsorCredentialRepository) {
+			SponsorAuthenticationProvider sponsorAuthenticationProvider) {
 		SponsorAuthenticationProcessingFilter sponsorFilter = new SponsorAuthenticationProcessingFilter(
 				"/sponsors/login");
 		sponsorFilter.setAuthenticationSuccessHandler(
@@ -22,8 +22,7 @@ public class SponsorConfig {
 		sponsorFilter.setAuthenticationFailureHandler(
 				new SimpleUrlAuthenticationFailureHandler("/sponsors/login?error"));
 		sponsorFilter.setAuthenticationManager(
-				new ProviderManager(Arrays.asList(new SponsorAuthenticationProvider(
-						sponsorCredentialRepository, passwordEncoder()))));
+				new ProviderManager(Arrays.asList(sponsorAuthenticationProvider)));
 		return sponsorFilter;
 	}
 

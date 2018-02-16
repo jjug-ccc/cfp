@@ -1,5 +1,14 @@
 package jjug.submission;
 
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
@@ -9,22 +18,14 @@ import jjug.submission.event.SubmissionCreatedEvent;
 import jjug.submission.event.SubmissionUpdatedBySpeakerEvent;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = { "conference" })
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -32,8 +33,6 @@ import java.util.UUID;
 @DynamicUpdate
 public class Submission extends AbstractAggregateRoot implements Serializable {
 	@Id
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@GeneratedValue(generator = "uuid")
 	@Column(columnDefinition = "binary(16)")
 	private UUID submissionId;
 	@NotEmpty

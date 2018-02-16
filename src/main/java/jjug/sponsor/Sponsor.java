@@ -1,6 +1,7 @@
 package jjug.sponsor;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,13 +16,13 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = { "conference", "credential" })
+@EqualsAndHashCode(exclude = { "conference", "credential", "sponsoredSubmissions" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @DynamicUpdate
-@ToString(exclude = { "conference", "credential" })
+@ToString(exclude = { "conference", "credential", "sponsoredSubmissions" })
 public class Sponsor implements Serializable {
 	@Id
 	@Size(max = 255)
@@ -43,5 +44,9 @@ public class Sponsor implements Serializable {
 	@JsonIgnore
 	private Conference conference;
 	@OneToOne(mappedBy = "sponsor")
+	@JsonIgnore
 	private SponsorCredential credential;
+	@OneToMany(mappedBy = "sponsor")
+	@JsonIgnore
+	private List<SponsoredSubmission> sponsoredSubmissions;
 }

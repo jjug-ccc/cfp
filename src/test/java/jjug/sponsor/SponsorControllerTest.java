@@ -2,10 +2,14 @@ package jjug.sponsor;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +29,8 @@ public class SponsorControllerTest {
 	@LocalServerPort
 	int port;
 	WebClient webClient;
+	@Rule
+	public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
 
 	@Before
 	public void setup() throws Exception {
@@ -133,6 +139,51 @@ public class SponsorControllerTest {
 				"\n" + //
 				"Submit CFP\n" + //
 				"JJUG Call for Papers");
+
+		HtmlForm submissionForm = this
+				.inputSpeaker1(this.inputSession(submissionFormPage));
+		HtmlPage submit = submissionForm.getInputsByValue("Submit CFP").get(0).click();
+
+		assertThat(submit.asText()).startsWith("JJUG Call for Papers\n" + //
+				"\n" + //
+				"JJUG Call for Papers\n" + //
+				" [スポンサー] テストスポンサーさんログイン中。 パスワードリセット\n" + //
+				"スポンサー中のCFP\n" + //
+				" Test Conf 1 (2100/01/01) \uD83D\uDCDD応募\n" + //
+				"応募済みCFP\n" + //
+				"\n" + //
+				"[Test Conf 1] スポンサーセッション [応募済]");
+
+		HtmlPage editFormPage = submit.getAnchorByText("スポンサーセッション").click();
+		HtmlPage preview = ((HtmlAnchor) editFormPage.querySelector("a[target=_blank]"))
+				.click();
+		assertThat(preview.asText()).startsWith("スポンサーセッション\n" +
+				"\n" +
+				"スポンサーセッション\n" +
+				"講演情報\n" +
+				"タイトル\n" +
+				"スポンサーセッション\n" +
+				"概要\n" +
+				"スポンサーのセッションです。\n" +
+				"\n" +
+				"想定している聴講者層\n" +
+				"テストユーザーを対象としています。\n" +
+				"カテゴリ\n" +
+				"Server Side Java\n" +
+				"難易度\n" +
+				"中級者向け\n" +
+				"種類\n" +
+				"一般枠 (45分)\n" +
+				"言語\n" +
+				"日本語\n" +
+				"講演者情報\n" +
+				"\n" +
+				"\n" +
+				"スポンサー太郎 \n" +
+				" テストスポンサー\n" +
+				"色々やっています。\n" +
+				"\n" +
+				"https://twitter.com/jjug");
 	}
 
 	@Test
@@ -179,5 +230,30 @@ public class SponsorControllerTest {
 		loginForm.getInputByName("sponsorId").setValueAttribute(sponsorId);
 		loginForm.getInputByName("password").setValueAttribute(password);
 		return loginForm.getInputByValue("ログイン").click();
+	}
+
+	private HtmlForm inputSession(HtmlPage submission) {
+		HtmlForm form = (HtmlForm) submission.getElementsByTagName("form").get(0);
+		form.getInputByName("title").setValueAttribute("スポンサーセッション");
+		form.getTextAreaByName("description").setText("スポンサーのセッションです。");
+		form.getInputByName("target").setValueAttribute("テストユーザーを対象としています。");
+		form.getSelectByName("category").setSelectedAttribute("SERVER_SIDE_JAVA", true);
+		form.getSelectByName("level").setSelectedAttribute("INTERMEDIATE", true);
+		form.getSelectByName("talkType").setSelectedAttribute("STANDARD", true);
+		form.getSelectByName("language").setSelectedAttribute("JAPANESE", true);
+		return form;
+	}
+
+	private HtmlForm inputSpeaker1(HtmlForm form) {
+		form.getInputByName("speakerForms[0].name").setValueAttribute("スポンサー太郎");
+		form.getInputByName("speakerForms[0].email")
+				.setValueAttribute("sponsor@example.com");
+		form.getInputByName("speakerForms[0].github").setValueAttribute("jjug-ccc");
+		form.getTextAreaByName("speakerForms[0].bio").setText("色々やっています。");
+		form.getSelectByName("speakerForms[0].activityList[0].activityType")
+				.setSelectedAttribute("TWITTER", true);
+		form.getInputByName("speakerForms[0].activityList[0].url")
+				.setValueAttribute("https://twitter.com/jjug");
+		return form;
 	}
 }
