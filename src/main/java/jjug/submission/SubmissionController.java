@@ -51,7 +51,6 @@ public class SubmissionController {
 		SubmissionForm submissionForm = new SubmissionForm();
 		if (user != null) {
 			SpeakerForm speakerForm = new SpeakerForm();
-			speakerForm.setName(user.getName());
 			speakerForm.setGithub(user.getGithub());
 			ActivityForm activity = new ActivityForm();
 			String profileUrl = "http://www.java-users.jp/ccc2017fall/assets/img/speakers/duke.jpg";
@@ -70,9 +69,10 @@ public class SubmissionController {
 			speakerForms.add(speakerForm);
 			submissionForm.setSpeakerForms(speakerForms);
 			if (user instanceof SponsorUser) {
-				SponsorUser sponsorUser = SponsorUser.class.cast(user);
-				speakerForm
-						.setCompanyOrCommunity(sponsorUser.getSponsor().getSponsorName());
+				speakerForm.setCompanyOrCommunity(user.getName());
+			}
+			else {
+				speakerForm.setName(user.getName());
 			}
 		}
 		return submissionForm;

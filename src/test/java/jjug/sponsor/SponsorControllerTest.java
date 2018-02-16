@@ -103,7 +103,7 @@ public class SponsorControllerTest {
 		HtmlPage submissionPage = homePage.getAnchorByText("\uD83D\uDCDD応募").click();
 		HtmlPage submissionFormPage = submissionPage.getAnchorByText("\uD83D\uDCDD応募")
 				.click();
-		assertThat(submissionFormPage.asText()).startsWith("Test Conf 1\n" + //
+		assertThat(submissionFormPage.asText()).isEqualTo("Test Conf 1\n" + //
 				"\n" + //
 				"Test Conf 1 (2100/01/01)\n" + //
 				"Japanese English\n" + //
@@ -119,7 +119,7 @@ public class SponsorControllerTest {
 				"言語\t(Required)\n" + //
 				"講演者情報1\n" + //
 				" ❗ Githubアカウントがない場合は、\"GitHubアカウント\"にjjug-cfpを入力してください。 ❗\n" + //
-				"名前\tテストスポンサー\n" + //
+				"名前\t\n" + //
 				"GitHubアカウント\t\n" + //
 				"所属\tテストスポンサー\n" + //
 				"講演者紹介\t\n" + //
