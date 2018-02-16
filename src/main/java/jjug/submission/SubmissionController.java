@@ -1,5 +1,8 @@
 package jjug.submission;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import jjug.CfpUser;
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
@@ -7,20 +10,20 @@ import jjug.speaker.Activity;
 import jjug.speaker.Speaker;
 import jjug.speaker.SpeakerRepository;
 import jjug.speaker.enums.ActivityType;
+import jjug.sponsor.SponsorUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.*;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
@@ -65,6 +68,11 @@ public class SubmissionController {
 			Deque<SpeakerForm> speakerForms = new LinkedList<>();
 			speakerForms.add(speakerForm);
 			submissionForm.setSpeakerForms(speakerForms);
+			if (user instanceof SponsorUser) {
+				SponsorUser sponsorUser = SponsorUser.class.cast(user);
+				speakerForm
+						.setCompanyOrCommunity(sponsorUser.getSponsor().getSponsorName());
+			}
 		}
 		return submissionForm;
 	}
