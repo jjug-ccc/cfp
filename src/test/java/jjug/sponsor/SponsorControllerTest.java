@@ -152,7 +152,7 @@ public class SponsorControllerTest {
 				" Test Conf 1 (2100/01/01) \uD83D\uDCDD応募\n" + //
 				"応募済みCFP\n" + //
 				"\n" + //
-				"[Test Conf 1] スポンサーセッション [応募済]");
+				"[Test Conf 1] スポンサーセッション [スポンサー]");
 
 		HtmlPage editFormPage = submit.getAnchorByText("スポンサーセッション").click();
 		HtmlPage preview = ((HtmlAnchor) editFormPage.querySelector("a[target=_blank]"))

@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import jjug.speaker.Speaker;
 import jjug.submission.Submission;
+import jjug.submission.enums.SubmissionStatus;
 import lombok.*;
 
 import org.springframework.util.CollectionUtils;
@@ -28,5 +29,9 @@ public class CfpUser implements Serializable {
 		}
 		return speakers.stream()
 				.anyMatch(speaker -> Objects.equals(speaker.getGithub(), getGithub()));
+	}
+
+	public SubmissionStatus submittedStatus() {
+		return SubmissionStatus.SUBMITTED;
 	}
 }

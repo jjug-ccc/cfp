@@ -2,7 +2,6 @@ package jjug.admin;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
 import jjug.speaker.Speakers;
 import jjug.sponsor.Sponsor;
-import jjug.sponsor.SponsorRepository;
 import jjug.submission.Submission;
 import jjug.submission.SubmissionService;
 import jjug.vote.VoteRepository;
@@ -37,7 +35,6 @@ import static jjug.submission.enums.SubmissionStatus.*;
 public class ConferenceAdminController {
 	private final ConferenceRepository conferenceRepository;
 	private final VoteRepository voteRepository;
-	private final SponsorRepository sponsorRepository;
 	private final SubmissionService submissionService;
 
 	@ModelAttribute
@@ -54,6 +51,9 @@ public class ConferenceAdminController {
 		List<Sponsor> sponsors = conference.getSponsors();
 		model.addAttribute("submittedSubmissions",
 				submissions.stream().filter(s -> s.getSubmissionStatus() == SUBMITTED)
+						.collect(Collectors.toList()));
+		model.addAttribute("sponsoredSubmissions",
+				submissions.stream().filter(s -> s.getSubmissionStatus() == SPONSORED)
 						.collect(Collectors.toList()));
 		model.addAttribute("draftSubmissions",
 				submissions.stream().filter(s -> s.getSubmissionStatus() == DRAFT)
@@ -75,7 +75,7 @@ public class ConferenceAdminController {
 		model.addAttribute("changeStatusForm", changeStatusForm);
 		return "admin/conference";
 	}
-	
+
 	@PostMapping(path = "admin/conferences/{confId}", params = "changeConfStatus")
 	String changeConfStatus(@PathVariable UUID confId, Model model,
 			@Validated ConferenceForm form, BindingResult bindingResult) {

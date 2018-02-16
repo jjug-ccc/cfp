@@ -115,6 +115,39 @@
         <!--/*/ </th:block> /*/-->
         <!--/*/ </th:block> /*/-->
     </table>
+    <h4 th:text="#{submissionstatus.sponsored}"></h4>
+    <table>
+        <tr>
+            <th th:text="#{title}">aa</th>
+            <th th:text="#{category}">aa</th>
+            <th th:text="#{level}">aa</th>
+            <th th:text="#{talkType}">aa</th>
+            <th th:text="#{name}">aa</th>
+            <th th:text="#{github}">aa</th>
+            <th th:text="#{note}">aa</th>
+        </tr>
+        <!--/*/ <th:block th:each="submission : ${sponsoredSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
+        <tr>
+            <td th:rowspan="${speakerNum}"><a th:text="${submission.title}"
+                                              th:href="@{/admin/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a>
+            </td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.category.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.level.message(@messageSource, #locale)}"></td>
+            <td th:rowspan="${speakerNum}" th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
+            <td th:text="${submission.speakers[0].name}"></td>
+            <td th:text="${submission.speakers[0].github}"></td>
+            <td th:text="${submission.speakers[0].note}"></td>
+        </tr>
+
+        <!--/*/ <th:block th:if="${speakerNum} > 1" > /*/-->
+        <tr th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
+            <td th:text="${submission.speakers[seq].name}"></td>
+            <td th:text="${submission.speakers[seq].github}"></td>
+            <td th:text="${submission.speakers[seq].note}"></td>
+        </tr>
+        <!--/*/ </th:block> /*/-->
+        <!--/*/ </th:block> /*/-->
+    </table>
     <h4 th:text="#{submissionstatus.draft}"></h4>
     <table>
         <tr>

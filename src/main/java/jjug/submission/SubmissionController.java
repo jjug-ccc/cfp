@@ -28,7 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
-import static jjug.submission.enums.SubmissionStatus.*;
+import static jjug.submission.enums.SubmissionStatus.DRAFT;
+import static jjug.submission.enums.SubmissionStatus.WITHDRAWN;
 import static org.springframework.util.StringUtils.hasLength;
 
 @Controller
@@ -112,7 +113,8 @@ public class SubmissionController {
 		submission.setSubmissionId(UUID.randomUUID());
 		submission.setConference(conference);
 		submission.setSpeakers(copyToSpeakers(submissionForm.getSpeakerForms()));
-		submission.setSubmissionStatus(draft.map(d -> DRAFT).orElse(SUBMITTED));
+		submission.setSubmissionStatus(
+				draft.map(d -> DRAFT).orElse(user.submittedStatus()));
 		log.info("Submit {}", submission);
 		submissionRepository.save(submission.created());
 		return "redirect:/";
@@ -169,8 +171,8 @@ public class SubmissionController {
 			}
 		}
 		else {
-			submission.setSubmissionStatus(draft.map(d -> DRAFT)
-					.orElseGet(() -> withdraw.map(w -> WITHDRAWN).orElse(SUBMITTED)));
+			submission.setSubmissionStatus(draft.map(d -> DRAFT).orElseGet(
+					() -> withdraw.map(w -> WITHDRAWN).orElse(user.submittedStatus())));
 		}
 
 		BeanUtils.copyProperties(submissionForm, submission);
@@ -250,26 +252,24 @@ public class SubmissionController {
 		if (CollectionUtils.isEmpty(speakerForms)) {
 			return Collections.emptyList();
 		}
-		return speakerForms.stream()
-				.map(
-						speakerForm -> {
-							Speaker speaker = speakerRepository.findByGithub(speakerForm.getGithub())
-									.orElseGet(() -> Speaker.builder().github(speakerForm.getGithub()).build());
-							BeanUtils.copyProperties(speakerForm, speaker);
+		return speakerForms.stream().map(speakerForm -> {
+			Speaker speaker = speakerRepository.findByGithub(speakerForm.getGithub())
+					.orElseGet(() -> Speaker.builder().github(speakerForm.getGithub())
+							.build());
+			BeanUtils.copyProperties(speakerForm, speaker);
 
-							List<Activity> activityList = speakerForm.getActivityList().stream()
-									.filter(activityForm -> nonNull(activityForm.getUrl()) && hasLength(activityForm.getUrl()))
-									.distinct()
-									.map(activityForm -> {
-										Activity activity = new Activity();
-										BeanUtils.copyProperties(activityForm, activity);
-										return activity;
-									}).collect(Collectors.toList());
-							speaker.setActivityList(activityList);
+			List<Activity> activityList = speakerForm.getActivityList().stream()
+					.filter(activityForm -> nonNull(activityForm.getUrl())
+							&& hasLength(activityForm.getUrl()))
+					.distinct().map(activityForm -> {
+						Activity activity = new Activity();
+						BeanUtils.copyProperties(activityForm, activity);
+						return activity;
+					}).collect(Collectors.toList());
+			speaker.setActivityList(activityList);
 
-							return speaker;
-						}
-				).collect(Collectors.toList());
+			return speaker;
+		}).collect(Collectors.toList());
 	}
 
 }
