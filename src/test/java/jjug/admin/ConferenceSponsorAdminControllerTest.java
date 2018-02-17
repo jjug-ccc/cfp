@@ -177,4 +177,37 @@ public class ConferenceSponsorAdminControllerTest extends MockGithubServerTest {
 						"GOLD\t2018s-jjug\tJJUG\t\t\t ✅ \t 編集フォーム \n" + //
 						" パスワードリセット");
 	}
+
+	@Test
+	public void testAddExistingSponsor() throws Exception {
+		this.server.setDispatcher(new MockGithubServerDispatcher(port,
+				CfpUser.builder().name("Taro JJUG").github("jjug-cfp")
+						.email("jjug-cfp@example.com")
+						.avatarUrl("http://image.example.com/foo.jpg").build()));
+		HtmlPage homePage = this.webClient.getPage("http://localhost:" + port);
+		HtmlPage confPage = homePage.getAnchorByText("Test Conf 1 (2100/01/01)").click();
+		HtmlPage sponsorCreatePage1 = confPage.getAnchorByText("\uD83D\uDCB0スポンサーを追加")
+				.click();
+		HtmlForm sponsorCreateForm1 = (HtmlForm) sponsorCreatePage1
+				.getElementsByTagName("form").get(0);
+
+		sponsorCreateForm1.getSelectByName("sponsorType").setSelectedAttribute("GOLD",
+				true);
+		sponsorCreateForm1.getInputByName("sponsorId").setValueAttribute("2018s-jjug");
+		sponsorCreateForm1.getInputByName("sponsorName").setValueAttribute("JJUG");
+
+		HtmlPage confPageAdded1 = sponsorCreateForm1.getInputByValue("追加").click();
+		HtmlPage sponsorCreatePage2 = confPageAdded1
+				.getAnchorByText("\uD83D\uDCB0スポンサーを追加").click();
+		HtmlForm sponsorCreateForm2 = (HtmlForm) sponsorCreatePage2
+				.getElementsByTagName("form").get(0);
+
+		sponsorCreateForm2.getSelectByName("sponsorType").setSelectedAttribute("DIAMOND",
+				true);
+		sponsorCreateForm2.getInputByName("sponsorId").setValueAttribute("2018s-jjug");
+		sponsorCreateForm2.getInputByName("sponsorName").setValueAttribute("ダイヤ");
+
+		HtmlPage confPageAdded2 = sponsorCreateForm2.getInputByValue("追加").click();
+		assertThat(confPageAdded2.asText()).contains("sponsorIdは既に使用されています");
+	}
 }

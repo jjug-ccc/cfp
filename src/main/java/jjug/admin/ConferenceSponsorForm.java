@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import jjug.sponsor.UnusedSponsorId;
 import jjug.sponsor.enums.SponsorType;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
@@ -14,6 +15,7 @@ public class ConferenceSponsorForm implements Serializable {
 	@NotEmpty
 	@Size(max = 255)
 	@Pattern(regexp = "[a-zA-Z0-9\\-_]+", message = "sponsorIdは半角英数字および\"-\",\"_\"のみ利用可能です")
+	@UnusedSponsorId(message = "sponsorIdは既に使用されています", groups = ValidateSponsorId.class)
 	private String sponsorId;
 	@NotNull
 	private SponsorType sponsorType;
@@ -65,5 +67,8 @@ public class ConferenceSponsorForm implements Serializable {
 
 	public void setSponsorUrl(String sponsorUrl) {
 		this.sponsorUrl = sponsorUrl;
+	}
+
+	public static interface ValidateSponsorId {
 	}
 }

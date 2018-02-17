@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.validation.groups.Default;
+
+import jjug.admin.ConferenceSponsorForm.ValidateSponsorId;
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
 import jjug.sponsor.Sponsor;
@@ -44,7 +47,9 @@ public class ConferenceSponsorAdminController {
 
 	@PostMapping(path = "admin/conferences/{confId}/sponsors")
 	public String sponsorCreate(@PathVariable UUID confId, Model model,
-			@Validated ConferenceSponsorForm sponsorForm, BindingResult result) {
+			@Validated({ Default.class,
+					ValidateSponsorId.class }) ConferenceSponsorForm sponsorForm,
+			BindingResult result) {
 		Conference conference = conferenceRepository.findOne(confId).get();
 		if (result.hasErrors()) {
 			model.addAttribute("conference", conference);
