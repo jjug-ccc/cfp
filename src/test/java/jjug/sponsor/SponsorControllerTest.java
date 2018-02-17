@@ -1,14 +1,14 @@
 package jjug.sponsor;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetupTest;
-import org.junit.After;
-import org.junit.Before;
+import jjug.CfpUser;
+import jjug.MockGithubServerDispatcher;
+import jjug.MockGithubServerTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,26 +25,11 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = { "classpath:/delete-test-data.sql",
 		"classpath:/insert-test-data.sql" }, executionPhase = BEFORE_TEST_METHOD)
-public class SponsorControllerTest {
+public class SponsorControllerTest extends MockGithubServerTest {
 	@LocalServerPort
 	int port;
-	WebClient webClient;
 	@Rule
 	public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
-
-	@Before
-	public void setup() throws Exception {
-		this.webClient = new WebClient();
-		WebClientOptions options = this.webClient.getOptions();
-		options.setCssEnabled(false);
-		options.setJavaScriptEnabled(false);
-		options.setThrowExceptionOnFailingStatusCode(false);
-	}
-
-	@After
-	public void shutdown() throws Exception {
-		this.webClient.close();
-	}
 
 	@Test
 	public void testSponsorLogin() throws Exception {
@@ -144,7 +129,7 @@ public class SponsorControllerTest {
 				.inputSpeaker1(this.inputSession(submissionFormPage));
 		HtmlPage submit = submissionForm.getInputsByValue("Submit CFP").get(0).click();
 
-		assertThat(submit.asText()).startsWith("JJUG Call for Papers\n" + //
+		assertThat(submit.asText()).isEqualTo("JJUG Call for Papers\n" + //
 				"\n" + //
 				"JJUG Call for Papers\n" + //
 				" [スポンサー] テストスポンサーさんログイン中。 パスワードリセット\n" + //
@@ -157,32 +142,32 @@ public class SponsorControllerTest {
 		HtmlPage editFormPage = submit.getAnchorByText("スポンサーセッション").click();
 		HtmlPage preview = ((HtmlAnchor) editFormPage.querySelector("a[target=_blank]"))
 				.click();
-		assertThat(preview.asText()).startsWith("スポンサーセッション\n" +
-				"\n" +
-				"スポンサーセッション\n" +
-				"講演情報\n" +
-				"タイトル\n" +
-				"スポンサーセッション\n" +
-				"概要\n" +
-				"スポンサーのセッションです。\n" +
-				"\n" +
-				"想定している聴講者層\n" +
-				"テストユーザーを対象としています。\n" +
-				"カテゴリ\n" +
-				"Server Side Java\n" +
-				"難易度\n" +
-				"中級者向け\n" +
-				"種類\n" +
-				"一般枠 (45分)\n" +
-				"言語\n" +
-				"日本語\n" +
-				"講演者情報\n" +
-				"\n" +
-				"\n" +
-				"スポンサー太郎 \n" +
-				" テストスポンサー\n" +
-				"色々やっています。\n" +
-				"\n" +
+		assertThat(preview.asText()).isEqualTo("スポンサーセッション\n" + //
+				"\n" + //
+				"スポンサーセッション\n" + //
+				"講演情報\n" + //
+				"タイトル\n" + //
+				"スポンサーセッション\n" + //
+				"概要\n" + //
+				"スポンサーのセッションです。\n" + //
+				"\n" + //
+				"想定している聴講者層\n" + //
+				"テストユーザーを対象としています。\n" + //
+				"カテゴリ\n" + //
+				"Server Side Java\n" + //
+				"難易度\n" + //
+				"中級者向け\n" + //
+				"種類\n" + //
+				"一般枠 (45分)\n" + //
+				"言語\n" + //
+				"日本語\n" + //
+				"講演者情報\n" + //
+				"\n" + //
+				"\n" + //
+				"スポンサー太郎 \n" + //
+				" テストスポンサー\n" + //
+				"色々やっています。\n" + //
+				"\n" + //
 				"https://twitter.com/jjug");
 	}
 
@@ -221,6 +206,115 @@ public class SponsorControllerTest {
 		resetForm.getInputByName("passwordConfirm").setValueAttribute("new-password2");
 		HtmlPage loginPage = resetForm.getInputByValue("リセット").click();
 		assertThat(loginPage.asText()).contains("パスワード(確認)とパスワードの値が一致しません");
+	}
+
+	@Test
+	public void testSubmitAfterCfpIsFixed() throws Exception {
+		this.server.setDispatcher(new MockGithubServerDispatcher(port,
+				CfpUser.builder().name("Taro JJUG").github("jjug-cfp")
+						.email("jjug-cfp@example.com")
+						.avatarUrl("http://image.example.com/foo.jpg").build()));
+		HtmlPage adminPage = this.webClient.getPage("http://localhost:" + port);
+		assertThat(adminPage.asText()).contains("Test Conf 1 (2100/01/01)");
+		HtmlPage confPage = adminPage.getAnchorByText("Test Conf 1 (2100/01/01)").click();
+
+		((HtmlSelect) confPage.getElementByName("confStatus"))
+				.setSelectedAttribute("SELECTION", true);
+		HtmlPage updatedConfPage = confPage.getElementByName("changeConfStatus").click();
+		assertThat(updatedConfPage.asText()).startsWith("JJUG Call for Papers\n" + //
+				"\n" + //
+				"JJUG Call for Papers\n" + //
+				" Taro JJUGさんログイン中。\n" + //
+				"\n" + //
+				"CFP一覧 (管理者用)\n" + //
+				"\n" + //
+				"Test Conf 1 (2100/01/01) [選考中]");
+
+		HtmlPage home = this.login("test-sponsor", "password");
+		HtmlPage resetPage = home.getAnchorByText("パスワードリセット").click();
+		HtmlForm resetForm = (HtmlForm) resetPage.getElementsByTagName("form").get(0);
+		resetForm.getInputByName("sponsorId").setValueAttribute("test-sponsor");
+		resetForm.getInputByName("password").setValueAttribute("new-password");
+		resetForm.getInputByName("passwordConfirm").setValueAttribute("new-password");
+		HtmlPage loginPage = resetForm.getInputByValue("リセット").click();
+		HtmlForm loginForm = (HtmlForm) loginPage.getElementsByTagName("form").get(0);
+		loginForm.getInputByName("sponsorId").setValueAttribute("test-sponsor");
+		loginForm.getInputByName("password").setValueAttribute("new-password");
+		HtmlPage homePage = loginForm.getInputByValue("ログイン").click();
+		HtmlPage submissionPage = homePage.getAnchorByText("\uD83D\uDCDD応募").click();
+		HtmlPage submissionFormPage = submissionPage.getAnchorByText("\uD83D\uDCDD応募")
+				.click();
+		HtmlForm submissionForm = this
+				.inputSpeaker1(this.inputSession(submissionFormPage));
+		HtmlPage submit = submissionForm.getInputsByValue("Submit CFP").get(0).click();
+
+		assertThat(submit.asText()).isEqualTo("JJUG Call for Papers\n" + //
+				"\n" + //
+				"JJUG Call for Papers\n" + //
+				" [スポンサー] テストスポンサーさんログイン中。 パスワードリセット\n" + //
+				"スポンサー中のCFP\n" + //
+				" Test Conf 1 (2100/01/01) \uD83D\uDCDD応募\n" + //
+				"応募済みCFP\n" + //
+				"\n" + //
+				"[Test Conf 1] スポンサーセッション [スポンサー]");
+	}
+
+	@Test
+	public void testSubmitAfterCfpIsOpen() throws Exception {
+		this.server.setDispatcher(new MockGithubServerDispatcher(port,
+				CfpUser.builder().name("Taro JJUG").github("jjug-cfp")
+						.email("jjug-cfp@example.com")
+						.avatarUrl("http://image.example.com/foo.jpg").build()));
+		HtmlPage adminPage = this.webClient.getPage("http://localhost:" + port);
+		assertThat(adminPage.asText()).contains("Test Conf 1 (2100/01/01)");
+		HtmlPage confPage = adminPage.getAnchorByText("Test Conf 1 (2100/01/01)").click();
+
+		((HtmlSelect) confPage.getElementByName("confStatus"))
+				.setSelectedAttribute("OPEN", true);
+		HtmlPage updatedConfPage = confPage.getElementByName("changeConfStatus").click();
+		assertThat(updatedConfPage.asText()).startsWith("JJUG Call for Papers\n" + //
+				"\n" + //
+				"JJUG Call for Papers\n" + //
+				" Taro JJUGさんログイン中。\n" + //
+				"投票完了のCFP\n" + //
+				"\n" + //
+				"Test Conf 1 (2100/01/01)\n" + //
+				"\n" + //
+				"CFP一覧 (管理者用)\n" + //
+				"\n" + //
+				"Test Conf 1 (2100/01/01) [公開中]");
+
+		HtmlPage home = this.login("test-sponsor", "password");
+		HtmlPage resetPage = home.getAnchorByText("パスワードリセット").click();
+		HtmlForm resetForm = (HtmlForm) resetPage.getElementsByTagName("form").get(0);
+		resetForm.getInputByName("sponsorId").setValueAttribute("test-sponsor");
+		resetForm.getInputByName("password").setValueAttribute("new-password");
+		resetForm.getInputByName("passwordConfirm").setValueAttribute("new-password");
+		HtmlPage loginPage = resetForm.getInputByValue("リセット").click();
+		HtmlForm loginForm = (HtmlForm) loginPage.getElementsByTagName("form").get(0);
+		loginForm.getInputByName("sponsorId").setValueAttribute("test-sponsor");
+		loginForm.getInputByName("password").setValueAttribute("new-password");
+		HtmlPage homePage = loginForm.getInputByValue("ログイン").click();
+		HtmlPage submissionPage = homePage.getAnchorByText("\uD83D\uDCDD応募").click();
+		HtmlPage submissionFormPage = submissionPage.getAnchorByText("\uD83D\uDCDD応募")
+				.click();
+		HtmlForm submissionForm = this
+				.inputSpeaker1(this.inputSession(submissionFormPage));
+		HtmlPage submit = submissionForm.getInputsByValue("Submit CFP").get(0).click();
+
+		assertThat(submit.asText()).isEqualTo("JJUG Call for Papers\n" + //
+				"\n" + //
+				"JJUG Call for Papers\n" + //
+				" [スポンサー] テストスポンサーさんログイン中。 パスワードリセット\n" + //
+				"スポンサー中のCFP\n" + //
+				" Test Conf 1 (2100/01/01) \uD83D\uDCDD応募\n" + //
+				"投票完了のCFP\n" + //
+				"\n" + //
+				"Test Conf 1 (2100/01/01)\n" + //
+				"\n" + //
+				"応募済みCFP\n" + //
+				"\n" + //
+				"[Test Conf 1] スポンサーセッション [スポンサー]");
 	}
 
 	private HtmlPage login(String sponsorId, String password) throws Exception {

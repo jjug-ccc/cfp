@@ -1,10 +1,10 @@
 package jjug.conference.enums;
 
+import java.util.stream.Stream;
+
 import jjug.DisplayMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Getter
@@ -24,5 +24,9 @@ public enum ConfStatus implements DisplayMessage {
 
 	public boolean isFixedCfp() {
 		return this.value >= SELECTION.getValue();
+	}
+
+	public boolean isClosed() {
+		return this.value >= CLOSED.getValue();
 	}
 }

@@ -9,8 +9,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jjug.CfpUser;
 import jjug.conference.enums.ConfStatus;
 import jjug.sponsor.Sponsor;
+import jjug.sponsor.SponsorUser;
 import jjug.submission.Submission;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -53,4 +56,22 @@ public class Conference implements Serializable {
 	@OneToMany(mappedBy = "conference", orphanRemoval = true, cascade = CascadeType.ALL)
 	@OrderBy("sponsorType ASC, sponsorName ASC")
 	private List<Sponsor> sponsors;
+
+	@JsonIgnore
+	@Transient
+	public boolean isOpenCfpFor(CfpUser cfpUser) {
+		if (cfpUser instanceof SponsorUser) {
+			return !this.confStatus.isClosed();
+		}
+		return this.confStatus.isOpenCfp();
+	}
+
+	@JsonIgnore
+	@Transient
+	public boolean isFixedCfpFor(CfpUser cfpUser) {
+		if (cfpUser instanceof SponsorUser) {
+			return !this.confStatus.isClosed();
+		}
+		return this.confStatus.isFixedCfp();
+	}
 }

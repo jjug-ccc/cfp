@@ -80,9 +80,9 @@ public class SubmissionController {
 
 	@GetMapping("conferences/{confId}/submissions")
 	String showSubmissions(@PathVariable UUID confId, Model model,
-			SubmissionForm submissionForm) {
+			SubmissionForm submissionForm, @AuthenticationPrincipal CfpUser user) {
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		checkIfCfpIsOpen(conference, user);
 		model.addAttribute("conference", conference);
 		return "submission/submissions";
 	}
@@ -90,7 +90,7 @@ public class SubmissionController {
 	@GetMapping("conferences/{confId}/submissions/form")
 	String submitForm(@PathVariable UUID confId, Model model,
 			SubmissionForm submissionForm, @AuthenticationPrincipal CfpUser user) {
-		addModelForCreate(confId, model);
+		addModelForCreate(confId, model, user);
 		speakerRepository.findByGithub(user.getGithub())
 				.ifPresent(speaker -> copyToSpeakerForm(speaker, submissionForm));
 		return "submission/submissionForm";
@@ -102,11 +102,11 @@ public class SubmissionController {
 			@Validated SubmissionForm submissionForm, BindingResult bindingResult,
 			@AuthenticationPrincipal CfpUser user) {
 		if (bindingResult.hasErrors()) {
-			addModelForCreate(confId, model);
+			addModelForCreate(confId, model, user);
 			return "submission/submissionForm";
 		}
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		checkIfCfpIsOpen(conference, user);
 
 		Submission submission = new Submission();
 		BeanUtils.copyProperties(submissionForm, submission);
@@ -120,28 +120,28 @@ public class SubmissionController {
 		return "redirect:/";
 	}
 
-	private void addModelForCreate(UUID confId, Model model) {
+	private void addModelForCreate(UUID confId, Model model, CfpUser user) {
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		checkIfCfpIsOpen(conference, user);
 		model.addAttribute("conference", conference);
 	}
 
 	@PostMapping(value = "conferences/{confId}/submissions/form", params = "add-speaker")
 	public String addSpeakerForCreate(SubmissionForm submissionForm,
-			@PathVariable UUID confId, Model model) {
+			@PathVariable UUID confId, Model model,@AuthenticationPrincipal CfpUser user) {
 		submissionForm.getSpeakerForms().add(new SpeakerForm());
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		checkIfCfpIsOpen(conference, user);
 		model.addAttribute("conference", conference);
 		return "submission/submissionForm";
 	}
 
 	@PostMapping(value = "conferences/{confId}/submissions/form", params = "remove-speaker")
 	public String removeSpeakerForCreate(SubmissionForm submissionForm,
-			@PathVariable UUID confId, Model model) {
+			@PathVariable UUID confId, Model model, @AuthenticationPrincipal CfpUser user) {
 		submissionForm.getSpeakerForms().removeLast();
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference);
+		checkIfCfpIsOpen(conference, user);
 		model.addAttribute("conference", conference);
 		return "submission/submissionForm";
 	}
@@ -165,7 +165,7 @@ public class SubmissionController {
 			return "submission/submissionEditForm";
 		}
 		Submission submission = submissionRepository.findOne(submissionId).get();
-		if (submission.getConference().getConfStatus().isFixedCfp()) {
+		if (submission.getConference().isFixedCfpFor(user)) {
 			if (draft.isPresent() || withdraw.isPresent()) {
 				throw new CfpFixedException();
 			}
@@ -207,8 +207,8 @@ public class SubmissionController {
 		return "submission/submissionEditForm";
 	}
 
-	void checkIfCfpIsOpen(Conference conference) {
-		if (!conference.getConfStatus().isOpenCfp()) {
+	void checkIfCfpIsOpen(Conference conference, CfpUser user) {
+		if (!conference.isOpenCfpFor(user)) {
 			throw new CfpClosedException();
 		}
 	}
