@@ -92,6 +92,7 @@
             <th th:text="#{name}">aa</th>
             <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
+            <th th:text="#{transportationAllowance}">aa</th>
         </tr>
         <!--/*/ <th:block th:each="submission : ${submittedSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
@@ -104,6 +105,7 @@
             <td th:text="${submission.speakers[0].name}"></td>
             <td th:text="${submission.speakers[0].github}"></td>
             <td th:text="${submission.speakers[0].note}"></td>
+            <td th:text="${submission.speakers[0].transportationAllowance}"></td>
         </tr>
 
         <!--/*/ <th:block th:if="${speakerNum} > 1" > /*/-->
@@ -111,6 +113,7 @@
             <td th:text="${submission.speakers[seq].name}"></td>
             <td th:text="${submission.speakers[seq].github}"></td>
             <td th:text="${submission.speakers[seq].note}"></td>
+            <td th:text="${submission.speakers[seq].transportationAllowance}"></td>
         </tr>
         <!--/*/ </th:block> /*/-->
         <!--/*/ </th:block> /*/-->
@@ -125,6 +128,7 @@
             <th th:text="#{name}">aa</th>
             <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
+            <th th:text="#{transportationAllowance}">aa</th>
         </tr>
         <!--/*/ <th:block th:each="submission : ${sponsoredSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
@@ -137,6 +141,7 @@
             <td th:text="${submission.speakers[0].name}"></td>
             <td th:text="${submission.speakers[0].github}"></td>
             <td th:text="${submission.speakers[0].note}"></td>
+            <td th:text="${submission.speakers[0].transportationAllowance}"></td>
         </tr>
 
         <!--/*/ <th:block th:if="${speakerNum} > 1" > /*/-->
@@ -144,6 +149,7 @@
             <td th:text="${submission.speakers[seq].name}"></td>
             <td th:text="${submission.speakers[seq].github}"></td>
             <td th:text="${submission.speakers[seq].note}"></td>
+            <td th:text="${submission.speakers[seq].transportationAllowance}"></td>
         </tr>
         <!--/*/ </th:block> /*/-->
         <!--/*/ </th:block> /*/-->
@@ -158,6 +164,7 @@
             <th th:text="#{name}">aa</th>
             <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
+            <th th:text="#{transportationAllowance}">aa</th>
         </tr>
         <!--/*/ <th:block th:each="submission : ${draftSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
@@ -170,12 +177,14 @@
             <td th:text="${submission.speakers[0].name}"></td>
             <td th:text="${submission.speakers[0].github}"></td>
             <td th:text="${submission.speakers[0].note}"></td>
+            <td th:text="${submission.speakers[0].transportationAllowance}"></td>
         </tr>
         <!--/*/ <th:block th:if="${speakerNum} > 1" > /*/-->
         <tr th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
             <td th:text="${submission.speakers[seq].name}"></td>
             <td th:text="${submission.speakers[seq].github}"></td>
             <td th:text="${submission.speakers[seq].note}"></td>
+            <td th:text="${submission.speakers[seq].transportationAllowance}"></td>
         </tr>
         <!--/*/ </th:block> /*/-->
         <!--/*/ </th:block> /*/-->
@@ -190,6 +199,7 @@
             <th th:text="#{name}">aa</th>
             <th th:text="#{github}">aa</th>
             <th th:text="#{note}">aa</th>
+            <th th:text="#{transportationAllowance}">aa</th>
         </tr>
         <!--/*/ <th:block th:each="submission : ${withdrawnSubmissions}" th:with="speakerNum=${#lists.size(submission.speakers)}"> /*/-->
         <tr>
@@ -202,12 +212,14 @@
             <td th:text="${submission.speakers[0].name}"></td>
             <td th:text="${submission.speakers[0].github}"></td>
             <td th:text="${submission.speakers[0].note}"></td>
+            <td th:text="${submission.speakers[0].transportationAllowance}"></td>
         </tr>
         <!--/*/ <th:block th:if="${speakerNum} > 1"> /*/-->
         <tr th:each="seq : ${#numbers.sequence(1, speakerNum - 1)}">
             <td th:text="${submission.speakers[seq].name}"></td>
             <td th:text="${submission.speakers[seq].github}"></td>
             <td th:text="${submission.speakers[seq].note}"></td>
+            <td th:text="${submission.speakers[seq].transportationAllowance}"></td>
         </tr>
         <!--/*/ </th:block> /*/-->
         <!--/*/ </th:block> /*/-->
