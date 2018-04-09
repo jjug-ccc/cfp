@@ -28,7 +28,10 @@
         <form th:object="${submissionForm}" th:action="@{/submissions/{submissionId}/form(submissionId=${submissionId})}"
               method="post">
             <h2>Call for Papers</h2>
-            <p th:if="${submission}">Status: <span th:text="${submission.submissionStatus.message(@messageSource, #locale)}"></span></p>
+            <p th:if="${submission}">Status: [<span
+                    th:text="${submission.submissionStatus.message(@messageSource, #locale)}"
+                    th:unless="${submission.inSelection}">OPEN</span><span
+                    th:if="${submission.inSelection}" th:text="#{confstatus.selection}">In Selection</span>]</p>
             <h3 th:text="#{session}">aaa</h3>
             <table style="width: 80%">
                 <tr>

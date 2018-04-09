@@ -130,7 +130,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Japanese English\n" + //
 				"\n" + //
 				"Call for Papers\n" + //
-				"Status: 応募済\n" + //
+				"Status: [応募済]\n" + //
 				"講演情報\n" + //
 				"タイトル\tテストセッション\n" + //
 				"概要\tテスト用のセッションです。\n" + //
@@ -177,7 +177,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 						"Japanese English\n" + //
 						"\n" + //
 						"Call for Papers\n" + //
-						"Status: 応募済\n" + //
+						"Status: [応募済]\n" + //
 						"講演情報\n" + //
 						"タイトル\tテストセッション[変更]\n" + //
 						"概要\tテスト用のセッションです。[変更]\n" + //
@@ -292,7 +292,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Japanese English\n" + //
 				"\n" + //
 				"Call for Papers\n" + //
-				"Status: 応募済\n" + //
+				"Status: [応募済]\n" + //
 				"講演情報\n" + //
 				"タイトル\tテストセッション\n" + //
 				"概要\tテスト用のセッションです。\n" + //
@@ -389,7 +389,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Japanese English\n" + //
 				"\n" + //
 				"Call for Papers\n" + //
-				"Status: 応募済\n" + //
+				"Status: [応募済]\n" + //
 				"講演情報\n" + //
 				"タイトル\tテストセッション\n" + //
 				"概要\tテスト用のセッションです。\n" + //
@@ -426,7 +426,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Japanese English\n" + //
 				"\n" + //
 				"Call for Papers\n" + //
-				"Status: 応募済\n" + //
+				"Status: [応募済]\n" + //
 				"講演情報\n" + //
 				"タイトル\tテストセッション\n" + //
 				"概要\tテスト用のセッションです。\n" + //
