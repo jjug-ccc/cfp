@@ -68,7 +68,9 @@
                 [<span th:text="${submission.conference.confName}">JJUG CCC</span>]
                 <a th:href="@{/submissions/{submissionId}/form(submissionId=${submission.submissionId})}"
                    href="submission/submissionForm.html"><span th:text="${submission.title}">キーノート</span></a> [<span
-                    th:text="${submission.submissionStatus.message(@messageSource, #locale)}">OPEN</span>]
+                    th:text="${submission.submissionStatus.message(@messageSource, #locale)}"
+                    th:unless="${submission.conference.inSelection}">OPEN</span><span
+                    th:if="${submission.conference.inSelection}" th:text="#{confstatus.selection}">In Selection</span>]
             </li>
         </ul>
     </section>

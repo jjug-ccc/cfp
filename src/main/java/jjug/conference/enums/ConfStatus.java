@@ -29,4 +29,8 @@ public enum ConfStatus implements DisplayMessage {
 	public boolean isClosed() {
 		return this.value >= CLOSED.getValue();
 	}
+
+	public boolean isInSelection() {
+		return this == SELECTION;
+	}
 }

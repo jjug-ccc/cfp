@@ -74,4 +74,9 @@ public class Conference implements Serializable {
 		}
 		return this.confStatus.isFixedCfp();
 	}
+
+	@JsonIgnore
+	public boolean isInSelection() {
+		return this.confStatus.isInSelection();
+	}
 }
