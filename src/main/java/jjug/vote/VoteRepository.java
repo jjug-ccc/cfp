@@ -18,6 +18,6 @@ public interface VoteRepository extends Repository<Vote, UUID> {
 			@Param("github") String github);
 
 	@RestResource(exported = false)
-	@Query("SELECT s.submissionId AS submissionId, s.title AS title, s.category AS category, s.level AS level, s.talkType AS talkType, s.submissionStatus AS status, s.updatedAt AS updatedAt, count(v) AS count FROM Vote v RIGHT OUTER JOIN v.submission s WHERE s.conference.confId = :confId AND s.submissionStatus IN (jjug.submission.enums.SubmissionStatus.SUBMITTED, jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED, jjug.submission.enums.SubmissionStatus.REJECTED) GROUP BY s.submissionId, s.title, s.category, s.level, s.talkType, s.submissionStatus, s.updatedAt ORDER BY count(v) DESC, s.createdAt ASC")
+	@Query("SELECT s.submissionId AS submissionId, s.title AS title, s.category AS category, s.level AS level, s.talkType AS talkType, s.submissionStatus AS status, s.language AS language, s.updatedAt AS updatedAt, count(v) AS count FROM Vote v RIGHT OUTER JOIN v.submission s WHERE s.conference.confId = :confId AND s.submissionStatus IN (jjug.submission.enums.SubmissionStatus.SUBMITTED, jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED, jjug.submission.enums.SubmissionStatus.REJECTED) GROUP BY s.submissionId, s.title, s.category, s.level, s.talkType, s.submissionStatus, s.updatedAt ORDER BY count(v) DESC, s.createdAt ASC")
 	List<VoteSummary> reportSummary(@Param("confId") UUID confId);
 }

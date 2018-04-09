@@ -1,12 +1,9 @@
 package jjug.vote;
 
-import jjug.submission.enums.Category;
-import jjug.submission.enums.Level;
-import jjug.submission.enums.SubmissionStatus;
-import jjug.submission.enums.TalkType;
-
 import java.time.Instant;
 import java.util.UUID;
+
+import jjug.submission.enums.*;
 
 public interface VoteSummary {
 	UUID getSubmissionId();
@@ -20,6 +17,8 @@ public interface VoteSummary {
 	TalkType getTalkType();
 
 	SubmissionStatus getStatus();
+
+	Language getLanguage();
 
 	Instant getUpdatedAt();
 

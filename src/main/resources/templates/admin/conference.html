@@ -241,6 +241,7 @@
                 <th th:text="#{category}">aa</th>
                 <th th:text="#{level}">aa</th>
                 <th th:text="#{talkType}">aa</th>
+                <th th:text="#{language}">aa</th>
                 <th th:text="#{updatedAt}">aa</th>
                 <th>投票数</th>
             </tr>
@@ -262,6 +263,7 @@
                 <td th:text="${vote.category.message(@messageSource, #locale)}"></td>
                 <td th:text="${vote.level.message(@messageSource, #locale)}"></td>
                 <td th:text="${vote.talkType.message(@messageSource, #locale)}"></td>
+                <td th:text="${vote.language.message(@messageSource, #locale)}"></td>
                 <td th:text="${vote.updatedAt}"></td>
                 <td th:text="${vote.count}"></td>
             </tr>
