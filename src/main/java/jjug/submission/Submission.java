@@ -85,4 +85,12 @@ public class Submission extends AbstractAggregateRoot implements Serializable {
 		super.registerEvent(new SubmissionUpdatedBySpeakerEvent(this));
 		return this;
 	}
+
+	@JsonIgnore
+	public boolean isInSelection() {
+		if (this.submissionStatus == SubmissionStatus.SPONSORED) {
+			return false;
+		}
+		return this.conference.isInSelection();
+	}
 }
