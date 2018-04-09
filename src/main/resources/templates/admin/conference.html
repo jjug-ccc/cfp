@@ -229,6 +229,7 @@
 </section>
 <section>
     <h3>投票結果</h3>
+    <a th:href="@{/admin/conferences/{confId}.csv(confId=${conference.confId})}">⬇️&nbsp;CSVダウンロード</a>
     <form th:object="${changeStatusForm}" th:action="@{/admin/conferences/{confId}(confId=${conference.confId})}"
           method="post">
         <table>
