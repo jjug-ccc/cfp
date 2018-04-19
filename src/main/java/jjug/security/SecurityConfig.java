@@ -10,6 +10,7 @@ import jjug.sponsor.SponsorAuthenticationProcessingFilter;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -33,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and() //
 				.addFilterAfter(this.sponsorFilter, LogoutFilter.class) //
 				.authorizeRequests() //
+				.antMatchers(HttpMethod.OPTIONS).permitAll() //
 				.mvcMatchers("/submissions/*", "/conferences/*",
 						"/conferences/*/submissions", "/conferences/*/votes",
 						"/v1/conferences/{confId}/submissions/**", "/sponsors/login",
@@ -64,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				servletResponse.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET");
 				servletResponse.setHeader("Access-Control-Max-Age", "3600");
 				servletResponse.setHeader("Access-Control-Allow-Headers",
-						"Origin, X-Requested-With, Content-Type, Accept, Authorization");
+						"Origin, X-Requested-With, Content-Type, Accept, Authorization, X-XSRF-TOKEN");
 				chain.doFilter(request, response);
 			}
 
