@@ -3,6 +3,7 @@ package jjug.submission;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jjug.attendee.Attendee;
 import jjug.conference.Conference;
 import jjug.speaker.Speaker;
 import jjug.speaker.Speakers;
@@ -24,7 +26,7 @@ import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Getter
 @Setter
-@ToString(exclude = { "conference" })
+@ToString(exclude = { "conference", "attendees" })
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +69,10 @@ public class Submission extends AbstractAggregateRoot implements Serializable {
 	@NotNull
 	@JsonIgnore
 	private Conference conference;
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "submission_attendee", joinColumns = @JoinColumn(name = "submission_id"), inverseJoinColumns = @JoinColumn(name = "attendee_id"))
+	@JsonIgnore
+	public Set<Attendee> attendees;
 	@Column(insertable = false, updatable = false)
 	private Instant createdAt;
 	@Column(insertable = false, updatable = false)

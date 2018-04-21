@@ -1,3 +1,5 @@
+DELETE FROM submission_attendee WHERE submission_id IN (SELECT submission_id FROM submission WHERE conference_id IN (SELECT conf_id FROM conference WHERE conf_name LIKE 'Test %'));
+DELETE FROM attendee WHERE conf_id IN (SELECT conf_id FROM conference WHERE conf_name LIKE 'Test %');
 DELETE FROM sponsored_submission WHERE sponsor_id IN (SELECT sponsor_id FROM sponsor WHERE conference_id IN (SELECT conf_id FROM conference WHERE conf_name LIKE 'Test %'));
 DELETE FROM sponsor_credential_reset WHERE sponsor_id IN (SELECT sponsor_id FROM sponsor WHERE conference_id IN (SELECT conf_id FROM conference WHERE conf_name LIKE 'Test %'));
 DELETE FROM sponsor_credential WHERE sponsor_id IN (SELECT sponsor_id FROM sponsor WHERE conference_id IN (SELECT conf_id FROM conference WHERE conf_name LIKE 'Test %'));

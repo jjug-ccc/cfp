@@ -52,9 +52,11 @@ public class Conference implements Serializable {
 	private ConfStatus confStatus;
 	@OneToMany(mappedBy = "conference", orphanRemoval = true, cascade = CascadeType.ALL)
 	@OrderBy("submissionStatus ASC, createdAt ASC")
+	@JsonIgnore
 	private List<Submission> sessions;
 	@OneToMany(mappedBy = "conference", orphanRemoval = true, cascade = CascadeType.ALL)
 	@OrderBy("sponsorType ASC, sponsorName ASC")
+	@JsonIgnore
 	private List<Sponsor> sponsors;
 
 	@JsonIgnore

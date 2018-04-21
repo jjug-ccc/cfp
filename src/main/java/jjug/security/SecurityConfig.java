@@ -37,7 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.OPTIONS).permitAll() //
 				.mvcMatchers("/submissions/*", "/conferences/*",
 						"/conferences/*/submissions", "/conferences/*/votes",
-						"/v1/conferences/{confId}/submissions/**", "/sponsors/login",
+						"/v1/conferences/{confId}/submissions/**",
+						"/v1/conferences/{confId}/attendees/**", "/sponsors/login",
 						"/credentialresets/**")
 				.permitAll() //
 				.mvcMatchers("/v1/votes").authenticated() //
@@ -46,8 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login**").permitAll() //
 				.anyRequest().authenticated() //
 				.and() //
-				.csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.ignoringAntMatchers("/v1/conferences/*/attendees",
+						"/v1/conferences/*/attendees/*");
 	}
 
 	@Bean
