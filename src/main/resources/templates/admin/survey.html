@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${conference.confName}">Ooops, page not found</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h2 th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}">JJUG CCC
+        2016 Fall</h2>
+</section>
+<section>
+    <h3>事前聴講希望アンケート結果</h3>
+    <table>
+        <tr>
+            <th>タイトル</th>
+            <th>聴講希望者数</th>
+        </tr>
+        <tr th:each="survey,row : ${surveys}">
+            <td><a th:text="${survey.title}"
+                   th:href="@{/submissions/{submissionId}(submissionId=${survey.submissionId})}"></a></td>
+            <td>
+                <span th:text="${survey.count}"></span>
+            </td>
+        </tr>
+    </table>
+    <hr/>
+    <a th:text="${conference.confName +' (' + #temporals.format(conference.confDate, 'yyyy/MM/dd') + ')'}"
+       th:href="@{/admin/conferences/{confId}(confId=${conference.confId})}">JJUG CCC 2016 Fall</a>
+</section>
+</body>
+</html>

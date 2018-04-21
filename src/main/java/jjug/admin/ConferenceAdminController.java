@@ -10,7 +10,9 @@ import jjug.conference.ConferenceRepository;
 import jjug.speaker.Speakers;
 import jjug.sponsor.Sponsor;
 import jjug.submission.Submission;
+import jjug.submission.SubmissionRepository;
 import jjug.submission.SubmissionService;
+import jjug.submission.SubmissionSurvey;
 import jjug.vote.VoteRepository;
 import jjug.vote.VoteSummary;
 import lombok.AllArgsConstructor;
@@ -36,6 +38,7 @@ public class ConferenceAdminController {
 	private final ConferenceRepository conferenceRepository;
 	private final VoteRepository voteRepository;
 	private final SubmissionService submissionService;
+	private final SubmissionRepository submissionRepository;
 
 	@ModelAttribute
 	ConferenceForm conferenceForm() {
@@ -94,6 +97,15 @@ public class ConferenceAdminController {
 		List<SubmissionService.Status> statuses = form.getStatuses();
 		submissionService.changeStatus(statuses);
 		return "redirect:/admin/conferences/{confId}";
+	}
+
+	@GetMapping(path = "admin/conferences/{confId}/survey")
+	String survey(@PathVariable UUID confId, Model model) {
+		Conference conference = conferenceRepository.findOne(confId).get();
+		List<SubmissionSurvey> surveys = this.submissionRepository.reportSurvey(confId);
+		model.addAttribute("conference", conference);
+		model.addAttribute("surveys", surveys);
+		return "admin/survey";
 	}
 
 	@Data

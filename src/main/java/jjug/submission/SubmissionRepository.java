@@ -1,11 +1,14 @@
 package jjug.submission;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import jjug.submission.enums.SubmissionStatus;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.*;
 
 public interface SubmissionRepository extends Repository<Submission, UUID> {
 	Optional<Submission> findOne(UUID id);
@@ -27,4 +30,7 @@ public interface SubmissionRepository extends Repository<Submission, UUID> {
 	@Query(value = "SELECT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionId = :submissionId AND x.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED")
 	Optional<Submission> findAcceptedByConference(
 			@Param("submissionId") UUID submissionId, @Param("confId") UUID confId);
+
+	@Query(value = "SELECT s.submissionId AS submissionId, s.title AS title, count(a) AS count FROM Submission s LEFT JOIN s.attendees a WHERE s.conference.confId = :confId AND s.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED AND s.talkType <> jjug.submission.enums.TalkType.LT GROUP BY s.submissionId, s.title ORDER BY count(a) DESC")
+	List<SubmissionSurvey> reportSurvey(@Param("confId") UUID confId);
 }
