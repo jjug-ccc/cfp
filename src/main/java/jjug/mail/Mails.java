@@ -2,6 +2,7 @@ package jjug.mail;
 
 import java.util.stream.Collectors;
 
+import jjug.attendee.Attendee;
 import jjug.speaker.Speaker;
 import jjug.submission.Submission;
 
@@ -47,6 +48,22 @@ public class Mails {
 				+ "応募内容は下記URLより変更可能です。" //
 				+ "\n" //
 				+ editUrl);
+		return message;
+	}
+
+	public SimpleMailMessage attendee2018Spring(Attendee attendee) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(attendee.getEmail());
+		message.setFrom(this.from);
+		message.setSubject(
+				"[" + attendee.getConference().getConfName() + "] " + this.message);
+		String url = "https://jjug-ccc-2018-spring-survey.cfapps.io/#/sessions?id="
+				+ attendee.getAttendeeId();
+		message.setText(this.message + " \n" //
+				+ "\n" //
+				+ "回答内容は下記URLより変更可能です。" //
+				+ "\n" //
+				+ url);
 		return message;
 	}
 }

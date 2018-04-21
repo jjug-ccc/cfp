@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import jjug.conference.Conference;
+import jjug.conference.ConferenceRepository;
 import jjug.submission.Submission;
 import jjug.submission.SubmissionRepository;
 
@@ -15,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class AttendeeService {
 	private final AttendeeRepository attendeeRepository;
 	private final SubmissionRepository submissionRepository;
+	private final ConferenceRepository conferenceRepository;
 
 	public AttendeeService(AttendeeRepository attendeeRepository,
-			SubmissionRepository submissionRepository) {
+			SubmissionRepository submissionRepository,
+			ConferenceRepository conferenceRepository) {
 		this.attendeeRepository = attendeeRepository;
 		this.submissionRepository = submissionRepository;
+		this.conferenceRepository = conferenceRepository;
 	}
 
 	@Transactional
@@ -33,8 +36,8 @@ public class AttendeeService {
 					Attendee attendee = this.attendeeRepository.save(Attendee.builder() //
 							.email(email) //
 							.submissions(submissions) //
-							.conference(Conference.builder().confId(confId).build()) //
-							.build());
+							.conference(this.conferenceRepository.findOne(confId).get()) //
+							.build().registered());
 					submissions.forEach(s -> s.getAttendees().add(attendee));
 					return attendee;
 				});
@@ -55,6 +58,6 @@ public class AttendeeService {
 				.forEach(s -> s.getAttendees().remove(attendee));
 		submissions.forEach(s -> s.getAttendees().add(attendee));
 		attendee.setSubmissions(submissions);
-		return attendee;
+		return this.attendeeRepository.save(attendee.updated());
 	}
 }

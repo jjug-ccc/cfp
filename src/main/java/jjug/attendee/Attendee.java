@@ -14,6 +14,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 @Getter
 @Setter
 @ToString(exclude = { "submissions", "conference" })
@@ -23,7 +25,7 @@ import org.hibernate.validator.constraints.Email;
 @Builder
 @Entity
 @DynamicUpdate
-public class Attendee implements Serializable {
+public class Attendee extends AbstractAggregateRoot implements Serializable {
 	@Id
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid")
@@ -42,4 +44,14 @@ public class Attendee implements Serializable {
 	@NotNull
 	@ManyToMany(mappedBy = "attendees")
 	private List<Submission> submissions;
+
+	public Attendee registered() {
+		super.registerEvent(new AttendeeRegisteredEvent(this));
+		return this;
+	}
+
+	public Attendee updated() {
+		super.registerEvent(new AttendeeUpdatedEvent(this));
+		return this;
+	}
 }
