@@ -28,8 +28,8 @@
         <tr th:each="submission : ${submissions}">
             <td><a th:text="${submission.title}"
                    th:href="@{/submissions/{submissionId}(submissionId=${submission.submissionId})}">a</a></td>
-            <td th:text="${submission.speaker.name}"></td>
-            <td th:text="${submission.speaker.github}"></td>
+            <td th:text="${submission.speakers().name}"></td>
+            <td th:text="${submission.speakers().github}"></td>
             <td th:text="${submission.category.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.level.message(@messageSource, #locale)}"></td>
             <td th:text="${submission.talkType.message(@messageSource, #locale)}"></td>
