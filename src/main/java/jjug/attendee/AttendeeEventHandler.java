@@ -4,6 +4,8 @@ import jjug.attendee.event.AttendeeRegisteredEvent;
 import jjug.attendee.event.AttendeeUpdatedEvent;
 import jjug.mail.MailService;
 import jjug.mail.Mails;
+import jjug.slack.SlackNotifier;
+import jjug.slack.SlackWebhookPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +16,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 public class AttendeeEventHandler {
 	private final MailService mailService;
+	private final SlackNotifier slackNotifier;
 	private static final Logger log = LoggerFactory.getLogger(AttendeeEventHandler.class);
 
-	public AttendeeEventHandler(MailService mailService) {
+	public AttendeeEventHandler(MailService mailService, SlackNotifier slackNotifier) {
 		this.mailService = mailService;
+		this.slackNotifier = slackNotifier;
 	}
 
 	@TransactionalEventListener
@@ -28,6 +32,10 @@ public class AttendeeEventHandler {
 				.message("アンケート回答ありがとうございます。") //
 				.attendee2018Spring(attendee);
 		this.mailService.sendMail(message);
+		SlackWebhookPayload payload = SlackWebhookPayload.builder() //
+				.text(String.format("%sさんからアンケート回答がありました", attendee.getEmail())) //
+				.build();
+		this.slackNotifier.notify(payload);
 	}
 
 	@TransactionalEventListener
