@@ -37,8 +37,7 @@ public class AttendeeRestController {
 	public ResponseEntity<?> attend(@PathVariable("confId") UUID confId,
 			@RequestBody AttendRequest request,
 			@PathVariable("attendeeId") UUID attendeeId) {
-		Attendee attend = this.attendeeService.update(attendeeId, request.getEmail(),
-				request.getIds());
+		Attendee attend = this.attendeeService.update(attendeeId, request.getIds());
 		return ResponseEntity.ok(attend);
 	}
 

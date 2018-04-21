@@ -41,13 +41,10 @@ public class AttendeeService {
 	}
 
 	@Transactional
-	public Attendee update(UUID attendeeId, String email, List<UUID> submissionIds) {
+	public Attendee update(UUID attendeeId, List<UUID> submissionIds) {
 		return this.attendeeRepository.findByAttendeeId(attendeeId) //
-				.map(attendee -> {
-					this.updateAttendees(attendee, submissionIds);
-					attendee.setEmail(email);
-					return attendee;
-				}).get();
+				.map((Attendee attendee) -> this.updateAttendees(attendee, submissionIds))
+				.get();
 	}
 
 	private Attendee updateAttendees(Attendee attendee, List<UUID> submissionIds) {

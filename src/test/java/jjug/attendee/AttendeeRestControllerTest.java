@@ -313,7 +313,6 @@ public class AttendeeRestControllerTest {
 						+ attendeeId));
 		Map<String, Object> requestBody2 = new HashMap<String, Object>() {
 			{
-				put("email", "foo@example.com");
 				put("ids",
 						Arrays.asList("00000000-0000-0000-0000-000021000200",
 								"00000000-0000-0000-0000-000021000201",
@@ -384,7 +383,6 @@ public class AttendeeRestControllerTest {
 						+ attendeeId));
 		Map<String, Object> requestBody2 = new HashMap<String, Object>() {
 			{
-				put("email", "foo@example.com");
 				put("ids", Arrays.asList("00000000-0000-0000-0000-000021000201"));
 			}
 		};
@@ -444,7 +442,6 @@ public class AttendeeRestControllerTest {
 						+ attendeeId));
 		Map<String, Object> requestBody2 = new HashMap<String, Object>() {
 			{
-				put("email", "foo@example.com");
 				put("ids", Arrays.asList("00000000-0000-0000-0000-000021000200",
 						"00000000-0000-0000-0000-000021000202"));
 			}
