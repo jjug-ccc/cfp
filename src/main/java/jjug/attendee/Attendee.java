@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import jjug.attendee.event.AttendeeRegisteredEvent;
+import jjug.attendee.event.AttendeeUpdatedEvent;
 import jjug.conference.Conference;
 import jjug.submission.Submission;
 import lombok.*;

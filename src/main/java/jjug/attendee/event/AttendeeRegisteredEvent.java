@@ -1,4 +1,6 @@
-package jjug.attendee;
+package jjug.attendee.event;
+
+import jjug.attendee.Attendee;
 
 public class AttendeeRegisteredEvent {
 	private final Attendee attendee;

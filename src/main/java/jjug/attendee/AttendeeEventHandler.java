@@ -1,5 +1,7 @@
 package jjug.attendee;
 
+import jjug.attendee.event.AttendeeRegisteredEvent;
+import jjug.attendee.event.AttendeeUpdatedEvent;
 import jjug.mail.MailService;
 import jjug.mail.Mails;
 import org.slf4j.Logger;
