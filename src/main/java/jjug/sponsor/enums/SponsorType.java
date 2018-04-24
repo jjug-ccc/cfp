@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum SponsorType {
 	DIAMOND(0, true), PLATINUM(5, true), GOLD(10, true), BOOTH(15, false), BEER(20,
-			false), COFFEE(25, false), SUSHI(30, false);
+			false), COFFEE(25, false), SUSHI(30, false), DRINK(35, false);
 
 	private final int value;
 	private final boolean canSubmit;
