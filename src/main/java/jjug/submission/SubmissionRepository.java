@@ -24,10 +24,10 @@ public interface SubmissionRepository extends Repository<Submission, UUID> {
 	List<Submission> findByConference_ConfIdAndSubmissionStatus(UUID confId,
 			SubmissionStatus status);
 
-	@Query(value = "SELECT DISTINCT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED")
+	@Query(value = "SELECT DISTINCT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED AND x.talkType <> jjug.submission.enums.TalkType.LT")
 	List<Submission> findAllAcceptedByConference(@Param("confId") UUID confId);
 
-	@Query(value = "SELECT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionId = :submissionId AND x.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED")
+	@Query(value = "SELECT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionId = :submissionId AND x.submissionStatus = jjug.submission.enums.SubmissionStatus.ACCEPTED AND x.talkType <> jjug.submission.enums.TalkType.LT")
 	Optional<Submission> findAcceptedByConference(
 			@Param("submissionId") UUID submissionId, @Param("confId") UUID confId);
 
