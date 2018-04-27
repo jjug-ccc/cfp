@@ -103,7 +103,7 @@ public class SponsorControllerTest extends MockGithubServerTest {
 				"種類\t(Required)\n" + //
 				"言語\t(Required)\n" + //
 				"講演者情報1\n" + //
-				" ❗ Githubアカウントがない場合は、\"GitHubアカウント\"にjjug-cfpを入力してください。 ❗\n" + //
+				" ❗ Githubアカウントがない場合は、\"GitHubアカウント\"にjjug-ccc-test-sponsorを入力してください。 ❗\n" + //
 				"名前\t\n" + //
 				"GitHubアカウント\t\n" + //
 				"所属\tテストスポンサー\n" + //

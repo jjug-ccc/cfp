@@ -95,7 +95,7 @@
             <!--/*/ <th:block th:each="speakerForm, stat : ${submissionForm.speakerForms}"> /*/-->
             <h3 th:text="#{speaker} + ${stat.count}">講演者情報1</h3>
             <div sec:authorize="hasRole('SPONSOR')">
-                ❗ Githubアカウントがない場合は、"GitHubアカウント"に<code>jjug-cfp</code>を入力してください。 ❗
+                ❗ Githubアカウントがない場合は、"GitHubアカウント"に<code th:text="${'jjug-ccc-' + #authentication.principal.sponsor.sponsorId}"></code>を入力してください。 ❗
             </div>
             <table style="width: 80%">
                 <tr>
