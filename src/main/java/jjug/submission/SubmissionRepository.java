@@ -24,13 +24,13 @@ public interface SubmissionRepository extends Repository<Submission, UUID> {
 	List<Submission> findByConference_ConfIdAndSubmissionStatus(UUID confId,
 			SubmissionStatus status);
 
-	@Query(value = "SELECT DISTINCT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED) AND x.talkType <> jjug.submission.enums.TalkType.LT")
+	@Query(value = "SELECT DISTINCT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED) AND x.talkType <> jjug.submission.enums.TalkType.LT ORDER BY x.submissionStatus DESC, x.submissionId ASC")
 	List<Submission> findAllAcceptedByConference(@Param("confId") UUID confId);
 
-	@Query(value = "SELECT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionId = :submissionId AND x.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED)  AND x.talkType <> jjug.submission.enums.TalkType.LT")
+	@Query(value = "SELECT x FROM Submission x JOIN FETCH x.speakers WHERE x.conference.confId = :confId AND x.submissionId = :submissionId AND x.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED) AND x.talkType <> jjug.submission.enums.TalkType.LT ORDER BY x.submissionStatus DESC, x.submissionId ASC")
 	Optional<Submission> findAcceptedByConference(
 			@Param("submissionId") UUID submissionId, @Param("confId") UUID confId);
 
-	@Query(value = "SELECT s.submissionId AS submissionId, s.title AS title, count(a) AS count FROM Submission s LEFT JOIN s.attendees a WHERE s.conference.confId = :confId AND s.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED)  AND s.talkType <> jjug.submission.enums.TalkType.LT GROUP BY s.submissionId, s.title ORDER BY count(a) DESC")
+	@Query(value = "SELECT s.submissionId AS submissionId, s.title AS title, count(a) AS count FROM Submission s LEFT JOIN s.attendees a WHERE s.conference.confId = :confId AND s.submissionStatus IN (jjug.submission.enums.SubmissionStatus.ACCEPTED, jjug.submission.enums.SubmissionStatus.SPONSORED)  AND s.talkType <> jjug.submission.enums.TalkType.LT GROUP BY s.submissionId, s.title ORDER BY count(a) DESC, s.submissionStatus DESC, s.submissionId ASC")
 	List<SubmissionSurvey> reportSurvey(@Param("confId") UUID confId);
 }
