@@ -7,9 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jjug.conference.Conference;
 import jjug.conference.ConferenceRepository;
+import jjug.speaker.Speaker;
 import jjug.speaker.Speakers;
 import jjug.submission.Submission;
 import org.apache.commons.csv.CSVFormat;
@@ -36,8 +38,9 @@ public class DownloadController {
 	public ResponseEntity download(@PathVariable UUID confId) throws IOException {
 		Path tempFile = Files.createTempFile("download-", ".csv");
 		File file = tempFile.toFile();
-		try (CSVPrinter csvPrinter = CSVFormat.RFC4180.withHeader("Status", "Title",
-				"Name", "Github", "Email", "Category", "Level", "Type", "Language")
+		try (CSVPrinter csvPrinter = CSVFormat.RFC4180
+				.withHeader("Status", "Title", "Name", "Github", "Email", "Category",
+						"Level", "Type", "Language", "TransportationAllowance")
 				.print(file, windows31j)) {
 			Conference conference = conferenceRepository.findOne(confId).get();
 			List<Submission> sessions = conference.getSessions();
@@ -47,7 +50,10 @@ public class DownloadController {
 						submission.getTitle(), speakers.getName(), speakers.getGithub(),
 						speakers.getEmail(), submission.getCategory(),
 						submission.getLevel(), submission.getTalkType(),
-						submission.getLanguage());
+						submission.getLanguage(),
+						submission.getSpeakers().stream()
+								.map(Speaker::isTransportationAllowance)
+								.map(Object::toString).collect(Collectors.joining(",")));
 			}
 			return ResponseEntity.ok().contentType(textCsv)
 					.body(new FileSystemResource(file));
