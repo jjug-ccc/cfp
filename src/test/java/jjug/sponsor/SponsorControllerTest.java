@@ -117,8 +117,6 @@ public class SponsorControllerTest extends MockGithubServerTest {
 				"コミュニティ活動、BlogのURL、Twitterアカウントなど5\t\n" + //
 				"非公開情報1\n" + //
 				"Email\t\n" + //
-				"交通費支給を希望\tunchecked\n" + //
-				"国・市町村（交通費支給を要する場合)\t\n" + //
 				"事務局へのコメント、セッションの補足情報など\t\n" + //
 				" スピーカーを増やす\n" + //
 				"\n" + //

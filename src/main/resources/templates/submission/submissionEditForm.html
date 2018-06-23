@@ -148,6 +148,7 @@
                             th:placeholder="${stat.index} eq 0 ? '(Required)'"
                             th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].email') ? 'error' : ''}"/></td>
                 </tr>
+                <!--/*/ <th:block sec:authorize="!hasRole('SPONSOR')"> /*/-->
                 <tr>
                     <th><label th:for="transportationAllowance" th:text="#{transportationAllowance}">aaa</label></th>
                     <td><input type="checkbox" th:field="*{speakerForms[__${stat.index}__].transportationAllowance}"
@@ -158,6 +159,7 @@
                     <td><input type="text" th:field="*{speakerForms[__${stat.index}__].city}"
                             th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].city') ? 'error' : ''}"/></td>
                 </tr>
+                <!--/*/ </th:block> /*/-->
                 <tr>
                     <th><label th:for="note" th:text="#{note}">aaa</label></th>
                     <td><textarea th:field="*{speakerForms[__${stat.index}__].note}"
