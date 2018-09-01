@@ -150,16 +150,18 @@
                             placeholder="(Required)"
                             th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].email') ? 'error' : ''}"/></td>
                 </tr>
+                <!--/*/ <th:block sec:authorize="!hasRole('SPONSOR')"> /*/-->
                 <tr>
                     <th><label th:for="transportationAllowance" th:text="#{transportationAllowance}">aaa</label></th>
                     <td><input type="checkbox" th:field="*{speakerForms[__${stat.index}__].transportationAllowance}"
-                            th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].transportationAllowance') ? 'error' : ''}"/></td>
+                               th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].transportationAllowance') ? 'error' : ''}"/></td>
                 </tr>
                 <tr>
                     <th><label th:for="city" th:text="#{city}">aaa</label></th>
                     <td><input type="text" th:field="*{speakerForms[__${stat.index}__].city}"
-                            th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].city') ? 'error' : ''}"/></td>
+                               th:classappend="${#fields.hasErrors('speakerForms[' + stat.index + '].city') ? 'error' : ''}"/></td>
                 </tr>
+                <!--/*/ </th:block> /*/-->
                 <tr>
                     <th><label th:for="note" th:text="#{note}">aaa</label></th>
                     <td><textarea th:field="*{speakerForms[__${stat.index}__].note}"
