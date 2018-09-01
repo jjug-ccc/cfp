@@ -45,6 +45,25 @@ public class ConferenceAdminController {
 		return new ConferenceForm();
 	}
 
+	@GetMapping("admin/conferences")
+	String createForm(Model model, ConferenceCreateForm form) {
+		model.addAttribute("conferenceCreateForm", form);
+		return "admin/conferenceCreateForm";
+	}
+
+	@PostMapping("admin/conferences")
+	String create(Model model, ConferenceCreateForm form, BindingResult bindingResult) {
+		return ConferenceCreateForm.validator.validateToEither(form) //
+				.rightMap(ConferenceCreateForm::toConference) //
+				.fold(violations -> {
+					violations.apply(bindingResult::rejectValue);
+					return createForm(model, form);
+				}, conf -> {
+					Conference created = conferenceRepository.save(conf);
+					return "redirect:/admin/conferences/" + created.getConfId();
+				});
+	}
+
 	@GetMapping("admin/conferences/{confId}")
 	String getConf(@PathVariable UUID confId, Model model, ConferenceForm form) {
 		Conference conference = conferenceRepository.findOne(confId).get();

@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>カンファレンス作成</title>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" href="../../static/images/favicon.ico"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/theme.css}" href="../../static/css/theme.css"/>
+</head>
+<body>
+<section>
+    <h3>カンファレンス作成</h3>
+    <form th:object="${conferenceCreateForm}" th:action="@{/admin/conferences}"
+          method="post">
+        <table>
+            <tr>
+                <th>カンファレンス名</th>
+                <td><input th:field="*{confName}" type="text" placeholder="例: JJUG CCC 20XX Fall"/>
+                    <span th:if="${#fields.hasErrors('confName')}"
+                          th:errors="*{confName}"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>日付</th>
+                <td><input th:field="*{confDate}" type="date"/>
+                    <span th:if="${#fields.hasErrors('confDate')}"
+                          th:errors="*{confDate}"></span>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <input name="submit" type="submit" value="作成"/>
+    </form>
+</section>
+</body>
+</html>
