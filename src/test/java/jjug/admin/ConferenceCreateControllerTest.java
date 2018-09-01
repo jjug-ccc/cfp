@@ -34,9 +34,9 @@ public class ConferenceCreateControllerTest extends MockGithubServerTest {
 				.getPage("http://localhost:" + port + "/admin/conferences");
 
 		HtmlForm form = (HtmlForm) formPage.getElementsByTagName("form").get(0);
-		form.getInputByName("confName").setValueAttribute("JJUG CCC 2030 Spring");
+		form.getInputByName("confName").setValueAttribute("Test CCC 2030 Spring");
 		form.getInputByName("confDate").setValueAttribute("2030-01-01");
 		HtmlPage created = form.getInputByValue("作成").click();
-		assertThat(created.asText()).contains("JJUG CCC 2030 Spring (2030/01/01)");
+		assertThat(created.asText()).contains("Test CCC 2030 Spring (2030/01/01)");
 	}
 }
