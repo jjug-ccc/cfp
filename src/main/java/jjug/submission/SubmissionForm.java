@@ -32,6 +32,8 @@ public class SubmissionForm implements Serializable {
 	private TalkType talkType;
 	@NotNull
 	private Language language;
+	@Size(max = 5120)
+	private String sessionNote;
 	@Valid
 	@NotEmpty
 	Deque<SpeakerForm> speakerForms;

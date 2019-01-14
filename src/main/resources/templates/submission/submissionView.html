@@ -32,6 +32,10 @@
         <p th:text="${submission.talkType.message(@messageSource, #locale)}"></p>
         <h4 th:text="#{language}">aaa</h4>
         <p th:text="${submission.language.message(@messageSource, #locale)}"></p>
+        <!--/*/ <th:block th:if="${submission.sessionNote}" sec:authorize="hasRole('ADMIN')"> /*/-->
+        <h4 th:text="#{sessionNote}">aaa</h4>
+        <p th:text="${submission.sessionNote}"></p>
+        <!--/*/ </th:block> /*/-->
         <h3 th:text="#{speaker}">aaa</h3>
         <!--/*/ <th:block th:each="speaker : ${submission.speakers}"> /*/-->
         <div class="speaker-left">

@@ -1,15 +1,5 @@
 package jjug.submission;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jjug.attendee.Attendee;
 import jjug.conference.Conference;
@@ -21,8 +11,16 @@ import jjug.submission.event.SubmissionUpdatedBySpeakerEvent;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotEmpty;
-
 import org.springframework.data.domain.AbstractAggregateRoot;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -61,6 +59,10 @@ public class Submission extends AbstractAggregateRoot implements Serializable {
 	private TalkType talkType;
 	@NotNull
 	private Language language;
+	@JsonIgnore
+	@Lob
+	@Size(max = 5120)
+	private String sessionNote;
 	@NotNull
 	@JsonIgnore
 	private SubmissionStatus submissionStatus;

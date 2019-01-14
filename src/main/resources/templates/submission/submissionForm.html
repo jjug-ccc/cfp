@@ -91,6 +91,11 @@
                                 th:value="${e}"></option>
                     </select></td>
                 </tr>
+                <tr>
+                    <th><label th:for="sessionNote" th:text="#{sessionNote}">aaa</label></th>
+                    <td><textarea th:field="*{sessionNote}"
+                                  th:classappend="${#fields.hasErrors('sessionNote') ? 'error' : ''}"></textarea></td>
+                </tr>
             </table>
             <!--/*/ <th:block th:each="speakerForm, stat : ${submissionForm.speakerForms}"> /*/-->
             <h3 th:text="#{speaker} + ${stat.count}">講演者情報1</h3>

@@ -102,6 +102,7 @@ public class SponsorControllerTest extends MockGithubServerTest {
 				"難易度\t(Required)\n" + //
 				"種類\t(Required)\n" + //
 				"言語\t(Required)\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				" ❗ Githubアカウントがない場合は、\"GitHubアカウント\"にjjug-ccc-test-sponsorを入力してください。 ❗\n" + //
 				"名前\t\n" + //
@@ -117,7 +118,7 @@ public class SponsorControllerTest extends MockGithubServerTest {
 				"コミュニティ活動、BlogのURL、Twitterアカウントなど5\t\n" + //
 				"非公開情報1\n" + //
 				"Email\t\n" + //
-				"事務局へのコメント、セッションの補足情報など\t\n" + //
+				"事務局へのコメントなど\t\n" + //
 				" スピーカーを増やす\n" + //
 				"\n" + //
 				"Submit CFP\n" + //

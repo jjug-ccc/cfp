@@ -54,6 +54,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t(Required)\n" + //
 				"種類\t(Required)\n" + //
 				"言語\t(Required)\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -69,7 +70,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など");
+				"事務局へのコメントなど");
 	}
 
 	@Test
@@ -139,6 +140,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t上級者向け\n" + //
 				"種類\t一般枠 (20分)\n" + //
 				"言語\t日本語\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -154,7 +156,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など");
+				"事務局へのコメントなど");
 		HtmlPage nothingChanged = this.submitASubmission(removedSpeakerSubmit);
 		this.showCreatedPreview(nothingChanged);
 		this.checkUpdatedEmailNothingChanged();
@@ -186,6 +188,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 						"難易度\t中級者向け\n" + //
 						"種類\t初心者枠 (45分)\n" + //
 						"言語\t英語\n" + //
+						"セッションの補足情報\t\n" + //
 						"講演者情報1\n" + //
 						"名前\tFoo Bar\n" + //
 						"GitHubアカウント\tfoo\n" + //
@@ -201,7 +204,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 						"Email\tfoo@example.com\n" + //
 						"交通費支給を希望\tunchecked\n" + //
 						"国・市町村（交通費支給を要する場合)\t\n" + //
-						"事務局へのコメント、セッションの補足情報など");
+						"事務局へのコメントなど");
 		this.checkUpdatedEmailChanged();
 		this.showUpdatedPreview(editedForm);
 	}
@@ -248,6 +251,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t(Required)\n" + //
 				"種類\t(Required)\n" + //
 				"言語\t(Required)\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -263,7 +267,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など\t\n" + //
+				"事務局へのコメントなど\t\n" + //
 				"講演者情報2\n" + //
 				"名前\t\n" + //
 				"GitHubアカウント\t\n" + //
@@ -279,7 +283,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\t\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など");
+				"事務局へのコメントなど");
 		return addSpeakerForm;
 	}
 
@@ -301,6 +305,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t上級者向け\n" + //
 				"種類\t一般枠 (20分)\n" + //
 				"言語\t日本語\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -316,7 +321,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など\t\n" + //
+				"事務局へのコメントなど\t\n" + //
 				"講演者情報2\n" + //
 				"名前\t\n" + //
 				"GitHubアカウント\t\n" + //
@@ -332,7 +337,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\t\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など");
+				"事務局へのコメントなど");
 		return addSpeakerForm;
 	}
 
@@ -398,6 +403,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t上級者向け\n" + //
 				"種類\t一般枠 (20分)\n" + //
 				"言語\t日本語\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -413,7 +419,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など\t\n" + //
+				"事務局へのコメントなど\t\n" + //
 				" スピーカーを増やす");
 		return submission;
 	}
@@ -435,6 +441,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"難易度\t上級者向け\n" + //
 				"種類\t一般枠 (20分)\n" + //
 				"言語\t日本語\n" + //
+				"セッションの補足情報\t\n" + //
 				"講演者情報1\n" + //
 				"名前\tFoo Bar\n" + //
 				"GitHubアカウント\tfoo\n" + //
@@ -450,7 +457,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\tfoo@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など\t\n" + //
+				"事務局へのコメントなど\t\n" + //
 				"講演者情報2\n" + //
 				"名前\tHoge Bar\n" + //
 				"GitHubアカウント\thoge\n" + //
@@ -466,7 +473,7 @@ public class SubmissionControllerTest extends MockGithubServerTest {
 				"Email\thoge@example.com\n" + //
 				"交通費支給を希望\tunchecked\n" + //
 				"国・市町村（交通費支給を要する場合)\t\n" + //
-				"事務局へのコメント、セッションの補足情報など");
+				"事務局へのコメントなど");
 		return submission;
 	}
 
