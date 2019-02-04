@@ -25,8 +25,8 @@ public interface ConferenceCreateForm {
 							Range.of("0".codePointAt(0), "9".codePointAt(0)),
 							Range.single("-".codePointAt(0)),
 							Range.single(" ".codePointAt(0)))
-					.allIncluded().asByteArray().lessThanOrEqual(255))
-			.constraintForObject(ConferenceCreateForm::getConfDate, "confDate",
+					.asWhiteList().asByteArray().lessThanOrEqual(255))
+			.constraintOnObject(ConferenceCreateForm::getConfDate, "confDate",
 					Constraint::notNull)
 			.build();
 
