@@ -194,6 +194,13 @@
         <hr/>
         <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>
     </section>
+    <script  th:inline="javascript">
+        var warning = /*[[#{session.timeout.warn}]]*/ 'warning!';
+
+        setTimeout(function () {
+            alert(warning);
+        }, 20 * 60 * 1000);
+    </script>
 </div>
 </body>
 </html>
