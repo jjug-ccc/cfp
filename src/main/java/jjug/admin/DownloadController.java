@@ -38,9 +38,9 @@ public class DownloadController {
 	public ResponseEntity download(@PathVariable UUID confId) throws IOException {
 		Path tempFile = Files.createTempFile("download-", ".csv");
 		File file = tempFile.toFile();
-		try (CSVPrinter csvPrinter = CSVFormat.RFC4180
-				.withHeader("Status", "Title", "Name", "Github", "Email", "Category",
-						"Level", "Type", "Language", "TransportationAllowance")
+		try (CSVPrinter csvPrinter = CSVFormat.RFC4180.withHeader("Status", "Title",
+				"Name", "Github", "Email", "Category", "Level", "Type", "Language",
+				"TransportationAllowance", "SessionNote", "SpeakerNote")
 				.print(file, windows31j)) {
 			Conference conference = conferenceRepository.findOne(confId).get();
 			List<Submission> sessions = conference.getSessions();
@@ -53,6 +53,9 @@ public class DownloadController {
 						submission.getLanguage(),
 						submission.getSpeakers().stream()
 								.map(Speaker::isTransportationAllowance)
+								.map(Object::toString).collect(Collectors.joining(",")),
+						submission.getSessionNote(),
+						submission.getSpeakers().stream().map(Speaker::getNote)
 								.map(Object::toString).collect(Collectors.joining(",")));
 			}
 			return ResponseEntity.ok().contentType(textCsv)
