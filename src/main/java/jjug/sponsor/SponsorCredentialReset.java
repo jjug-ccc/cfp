@@ -42,6 +42,6 @@ public class SponsorCredentialReset {
 	}
 
 	public Instant expiry() {
-		return this.createdAt.plus(14, ChronoUnit.DAYS);
+		return this.createdAt.plus(30, ChronoUnit.DAYS);
 	}
 }
