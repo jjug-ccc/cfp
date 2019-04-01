@@ -20,7 +20,7 @@ public class SponsorCredentialResetTest {
 
 	@Test
 	public void isInValid() {
-		Instant createdAt = Instant.now().minus(14, ChronoUnit.DAYS).minus(1,
+		Instant createdAt = Instant.now().minus(30, ChronoUnit.DAYS).minus(1,
 				ChronoUnit.MINUTES);
 		SponsorCredentialReset reset = SponsorCredentialReset.builder()
 				.createdAt(createdAt).build();
