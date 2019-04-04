@@ -519,7 +519,7 @@ public class AttendeeRestControllerTest {
 				.isEqualTo("アンケート回答ありがとうございます。 \r\n" + //
 						"\r\n" + //
 						"回答内容は下記URLより変更可能です。\r\n" + //
-						"https://jjug-ccc-2018-spring-survey.cfapps.io/#/sessions?id="
+						"https://jjug-ccc-2019-spring-survey.cfapps.io/#/sessions?id="
 						+ attendeeId + //
 						"\r\n");
 		assertThat(receivedMessages[0].getSubject())
@@ -542,7 +542,7 @@ public class AttendeeRestControllerTest {
 				.isEqualTo("アンケート回答内容が変更されました。 \r\n" + //
 						"\r\n" + //
 						"回答内容は下記URLより変更可能です。\r\n" + //
-						"https://jjug-ccc-2018-spring-survey.cfapps.io/#/sessions?id="
+						"https://jjug-ccc-2019-spring-survey.cfapps.io/#/sessions?id="
 						+ attendeeId + //
 						"\r\n");
 		assertThat(receivedMessages[0].getSubject())
