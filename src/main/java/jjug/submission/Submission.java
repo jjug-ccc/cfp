@@ -25,7 +25,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString(exclude = { "conference", "attendees" })
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, exclude = { "conference", "attendees" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
