@@ -42,11 +42,11 @@ public class Conference implements Serializable {
 	private LocalDate confDate;
 	@Lob
 	@NotEmpty
-	@Size(max = 5012)
+	@Size(max = 20480)
 	private String confCfpNote;
 	@Lob
 	@NotEmpty
-	@Size(max = 5012)
+	@Size(max = 20480)
 	private String confVoteNote;
 	@NotNull
 	private ConfStatus confStatus;
