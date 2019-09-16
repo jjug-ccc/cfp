@@ -23,9 +23,23 @@
         <hr/>
         <p sec:authorize="not authenticated">
             <a th:href="@{/conferences/{confId}/submissions/form(confId=${conference.confId})}"
-               th:text="#{login-for-submission}">📝Login</a>
+               th:text="#{login-for-submission}"
+               th:if="${isOpen}">📝Login</a>
+            <br th:unless="${isOpen}"/>
+            <strong th:unless="${isOpen}">Call for Papersは受付終了しました</strong><br th:unless="${isOpen}"/>
+            <img src="../../static/images/thanks.png" th:src="@{/images/thanks.png}" th:unless="${isOpen}"/>
         </p>
-        <p sec:authorize="authenticated">
+        <p sec:authorize="(not hasRole('SPONSOR')) and authenticated">
+            <a th:href="@{/conferences/{confId}/submissions/form(confId=${conference.confId})}"
+               th:text="#{submission}"
+               th:if="${isOpen}">📝Login</a>
+            <br th:unless="${isOpen}"/>
+            <strong th:unless="${isOpen}">⚠️ Call for Papersは受付終了しました</strong><br th:unless="${isOpen}"/>
+            <img src="../../static/images/thanks.png" th:src="@{/images/thanks.png}" th:unless="${isOpen}"/>
+            <br/>
+            <a th:href="@{/}" href="../index.html" th:text="${@cfpProps.applicationName}">CFP</a>
+        </p>
+        <p sec:authorize="hasRole('SPONSOR')">
             <a th:href="@{/conferences/{confId}/submissions/form(confId=${conference.confId})}"
                th:text="#{submission}">📝Login</a>
             <br/>

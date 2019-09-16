@@ -1,6 +1,12 @@
 package jjug.submission;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jjug.CfpUser;
@@ -23,7 +29,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
@@ -82,7 +93,7 @@ public class SubmissionController {
 	String showSubmissions(@PathVariable UUID confId, Model model,
 			SubmissionForm submissionForm, @AuthenticationPrincipal CfpUser user) {
 		Conference conference = conferenceRepository.findOne(confId).get();
-		checkIfCfpIsOpen(conference, user);
+		model.addAttribute("isOpen", conference.isOpenCfpFor(user));
 		model.addAttribute("conference", conference);
 		return "submission/submissions";
 	}
