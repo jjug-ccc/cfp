@@ -57,13 +57,14 @@ public class Mails {
 		message.setFrom(this.from);
 		message.setSubject(
 				"[" + attendee.getConference().getConfName() + "] " + this.message);
-		String url = "https://jjug-ccc-2019-spring-survey.cfapps.io/#/sessions?id="
+		String url = "https://jjug-ccc-2019-fall-survey.cfapps.io/#/sessions?id="
 				+ attendee.getAttendeeId();
 		message.setText(this.message + " \n" //
 				+ "\n" //
 				+ "回答内容は下記URLより変更可能です。" //
 				+ "\n" //
-				+ url);
+				+ url //
+				+ "\n");
 		return message;
 	}
 }
